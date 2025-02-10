@@ -12,7 +12,7 @@ const styles_header = StyleSheet.create({
     box_icon:{
         padding:15,
         borderRadius:50,
-        backgroundColor:colors.SKY_BLUE
+        backgroundColor:colors.Black
     },
     text:{
         fontFamily:font.medium,
