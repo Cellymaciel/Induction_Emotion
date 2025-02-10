@@ -15,34 +15,34 @@ export function Staps(){
             <Stap
                 color="#0092D4"
                 title="Tristeza"
-                description="Sequencia de videos tristes"
+                description="Sequência de videos tristes"
                 screenName="sad"
             />
             <Stap
                 color="#E6E951"
                 title="Alegre"
-                description="Sequencia de videos alegres"
+                description="Sequência de videos alegres"
                 screenName="happy"
 
             />
             <Stap
                 color="#FF3737"
                 title="Raiva"
-                description="Sequencia de videos raivosos"
+                description="Sequência de videos raivosos"
                 screenName="angry"
 
             />
             <Stap
                 color="#AA0D95"
                 title="Surpresa"
-                description="Sequencia de videos surpresos"
+                description="Sequência de videos surpresos"
                 screenName="surprise"
 
             />
             <Stap
                 color="#64D476"
                 title="Neutro"
-                description="Sequencia de videos neutros"
+                description="Sequência de videos neutros"
                 screenName="neutral"
 
             />

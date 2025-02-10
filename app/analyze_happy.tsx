@@ -10,9 +10,9 @@ export default function Analyze_Happy(){
    
     const pieData = [
         { value: 25, color: colors.YELLOW, text: "25%" }, // Amarelo - Alegre
-        { value: 15, color: colors.DARK_BLUE, text: "15%" }, // Azul - Triste
+        { value: 50, color: colors.DARK_BLUE, text: "50%" }, // Azul - Triste
         { value: 10, color: colors.red, text: "10%" }, // Vermelho - Irritado
-        { value: 50, color: colors.GREEN, text:"50%" },
+        { value: 15, color: colors.GREEN, text:"15%" },
         { value: 0, color: colors.DARK_PINK, text:"0%" }, // Outras emoções (exemplo)
         // Outras emoções (exemplo)
       ];
@@ -59,7 +59,7 @@ export default function Analyze_Happy(){
           </View>
           <View style={styles_analyzes_happy.legendItem}>
             <View style={[styles_analyzes_happy.legendColor, { backgroundColor: colors.DARK_BLUE }]} />
-            <Text style={styles_analyzes_happy.txt_legende}>Triste - 15%</Text>
+            <Text style={styles_analyzes_happy.txt_legende}>Triste - 50%</Text>
           </View>
           <View style={styles_analyzes_happy.legendItem}>
             <View style={[styles_analyzes_happy.legendColor, { backgroundColor:colors.red }]} />
@@ -67,7 +67,7 @@ export default function Analyze_Happy(){
           </View>
           <View style={styles_analyzes_happy.legendItem}>
             <View style={[styles_analyzes_happy.legendColor, { backgroundColor:colors.GREEN}]} />
-            <Text style={styles_analyzes_happy.txt_legende}>Neutro - 50%</Text>
+            <Text style={styles_analyzes_happy.txt_legende}>Neutro - 15%</Text>
           </View>
           <View style={styles_analyzes_happy.legendItem}>
             <View style={[styles_analyzes_happy.legendColor, { backgroundColor:colors.DARK_PINK}]} />
@@ -77,7 +77,7 @@ export default function Analyze_Happy(){
       </View>
       </View>
       <View style={styles_analyzes_happy.contaner_videos}>
-        <Text style={styles_analyzes_happy.txt_cnt_videos}> Videos que obetam maior indução :</Text>
+        <Text style={styles_analyzes_happy.txt_cnt_videos}> Videos que obtiveram maior indução :</Text>
         <Text style={{fontFamily:font.light, textAlign:'center'}}> videos aki .....</Text>
       </View>
       <ButtonNew/>
