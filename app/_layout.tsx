@@ -25,6 +25,9 @@ export default function Layout(){
             <Stack.Screen name="angry"/>
             <Stack.Screen name="analyze_happy"/>
             <Stack.Screen name="cadastro"/>
+            <Stack.Screen name="tabFootBar"/>
+            <Stack.Screen name="perfil"/>
+            <Stack.Screen name="report"/>
         </Stack>
     )
 }

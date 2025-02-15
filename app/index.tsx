@@ -26,7 +26,7 @@ export default function Login(){
                 </View>
                 <View>
                 </View>   
-                <TouchableOpacity style={style_login.btn} onPress={()=> navigation.navigate('home')}>
+                <TouchableOpacity style={style_login.btn} onPress={()=> navigation.navigate('tabFootBar')}>
                     <Text style={{fontFamily: font.bold, color:colors.White, fontSize:18 }}>Entrar</Text>    
                 </TouchableOpacity>  
             <View>

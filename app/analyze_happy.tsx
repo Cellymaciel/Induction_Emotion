@@ -6,6 +6,7 @@ import { PieChart} from "react-native-gifted-charts"
 import { colors } from "@/constants/Colors";
 import { font } from "@/constants/font";
 import { ButtonNew } from "@/components/buttons/buton_index";
+
 export default function Analyze_Happy(){
    
     const pieData = [
@@ -22,6 +23,16 @@ export default function Analyze_Happy(){
         <View style={styles_analyzes_happy.container}>
             <Header/>
             <Text style={styles_analyzes_happy.title}> Analise da indução:</Text>
+              <View style={{flexDirection:'row', gap:70,  backgroundColor:colors.Pure_White, elevation:15, borderRadius:15,  alignItems:'center',justifyContent:'center',padding:15, marginTop:20}}>
+                <View style={{flexDirection:'row',gap:5}}>
+                  <Text style={styles_analyzes_happy.text_card}>Data:</Text>
+                  <Text style={[styles_analyzes_happy.text_about,{marginTop:5}]}>15/02/2025</Text>
+                </View>
+                <View style={{flexDirection:'row', gap:5}}>
+                  <Text style={styles_analyzes_happy.text_card}>Hora:</Text>
+                  <Text  style={[styles_analyzes_happy.text_about,{marginTop:5}]}>13:15</Text>
+                </View>
+              </View>
             <View style={styles_analyzes_happy.container_cards}>
                 <View style={styles_analyzes_happy.card}>
                     <Text style={styles_analyzes_happy.text_card}>Emoção Esperada:</Text>
