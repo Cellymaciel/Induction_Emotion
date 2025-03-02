@@ -23,7 +23,7 @@ const VideoList_Happy = () => {
         if(currentIndex < videoHappy.length -1){
             setCurrentIndex((prevIndex) => prevIndex+1)
         }else{
-            navigation.navigate('analyze_happy')
+            navigation.navigate('analyze')
         }
     }
   };

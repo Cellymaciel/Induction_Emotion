@@ -7,7 +7,7 @@ import { colors } from "@/constants/Colors";
 import { font } from "@/constants/font";
 import { ButtonNew } from "@/components/buttons/buton_index";
 
-export default function Analyze_Happy(){
+export default function Analyze(){
    
     const pieData = [
         { value: 25, color: colors.YELLOW, text: "25%" }, // Amarelo - Alegre

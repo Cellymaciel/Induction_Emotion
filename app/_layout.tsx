@@ -18,16 +18,12 @@ export default function Layout(){
         <Stack screenOptions={{headerShown:false}}>
             <Stack.Screen name="home"/>
             <Stack.Screen name="index"/>
-            <Stack.Screen name="happy"/>
-            <Stack.Screen name="sad"/>
-            <Stack.Screen name="neutral"/>
-            <Stack.Screen name="surprise"/>
-            <Stack.Screen name="angry"/>
-            <Stack.Screen name="analyze_happy"/>
+            <Stack.Screen name="analyze"/>
             <Stack.Screen name="cadastro"/>
             <Stack.Screen name="tabFootBar"/>
             <Stack.Screen name="perfil"/>
             <Stack.Screen name="report"/>
+            <Stack.Screen name="inducing"/>
         </Stack>
     )
 }

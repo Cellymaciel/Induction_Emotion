@@ -3,6 +3,8 @@ import { Text, View} from "react-native"
 import { Stap } from "../stap"
 import { style_staps } from "./css_index"
 import { colors } from "@/constants/Colors"
+
+
 export function Staps(){
     return(
         <View style={style_staps.container}>
@@ -16,34 +18,34 @@ export function Staps(){
                 color="#0092D4"
                 title="Tristeza"
                 description="Sequência de videos tristes"
-                screenName="sad"
+                screenName="inducing"
             />
             <Stap
                 color="#E6E951"
                 title="Alegre"
                 description="Sequência de videos alegres"
-                screenName="happy"
+                screenName="inducing"
 
             />
             <Stap
                 color="#FF3737"
                 title="Raiva"
                 description="Sequência de videos raivosos"
-                screenName="angry"
+                screenName="inducing"
 
             />
             <Stap
                 color="#AA0D95"
                 title="Surpresa"
                 description="Sequência de videos surpresos"
-                screenName="surprise"
+                screenName="inducing"
 
             />
             <Stap
                 color="#64D476"
                 title="Neutro"
                 description="Sequência de videos neutros"
-                screenName="neutral"
+                screenName="inducing"
 
             />
 
