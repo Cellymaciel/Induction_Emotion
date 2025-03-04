@@ -1,4 +1,4 @@
-import { View, Text , Image} from "react-native";
+import { View, Text , Image, ScrollView} from "react-native";
 import { styles_analyzes_happy } from "@/styles/css_analyzes_happy";
 import { Header } from "@/components/headers/header";
 import React from "react";
@@ -7,12 +7,13 @@ import { colors } from "@/constants/Colors";
 import { font } from "@/constants/font";
 import { ButtonNew } from "@/components/buttons/buton_index";
 import { PieGraph } from "@/components/pieGraph";
-
+import { LineGraph } from "@/components/lineGraph/lineGraph";
 export default function Analyze(){
    
       
     
     return(
+      <ScrollView>
         <View style={styles_analyzes_happy.container}>
             <Header/>
             <Text style={styles_analyzes_happy.title}> Analise da indução:</Text>
@@ -38,14 +39,15 @@ export default function Analyze(){
                     <Text style={styles_analyzes_happy.text_about}>Tristeza</Text>
                 </View>
             </View>
-            <PieGraph/>
+            <PieGraph title={"Porcentagem de humores registrado durante a indução"}/>
+            <LineGraph/>
       <View style={styles_analyzes_happy.contaner_videos}>
         <Text style={styles_analyzes_happy.txt_cnt_videos}> Videos que obtiveram maior indução :</Text>
         <Text style={{fontFamily:font.light, textAlign:'center'}}> videos aki .....</Text>
       </View>
       <ButtonNew/>
   </View>
-        
+  </ScrollView>
     )
 }
  

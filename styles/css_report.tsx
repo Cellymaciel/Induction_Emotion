@@ -35,7 +35,7 @@ const styles_report = StyleSheet.create({
     },
     textTitle:{
         fontFamily:font.light,
-        fontSize:14,
+        fontSize:15,
         color:colors.Black,
         textAlign:'left'
     },
@@ -43,7 +43,7 @@ const styles_report = StyleSheet.create({
         flexDirection:'row',
          justifyContent:'space-between', 
          gap:14,
-         marginTop:20,
+         marginTop:15,
     },
     btn:{
         height: 49,

@@ -32,7 +32,7 @@ const s = StyleSheet.create({
      
       },
       pickerWrapper: {
-        backgroundColor: colors.cinzas[300],
+        backgroundColor: colors.Pure_White,
         borderRadius: 10,
         borderWidth: 1,
         borderColor: colors.cinzas[400],

@@ -1,62 +1,101 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   View,
-  Image,
   TouchableOpacity,
   Text,
   Platform,
   StyleSheet
-} from 'react-native'
-import { colors } from '@/constants/Colors'
-import DateTimePicker from '@react-native-community/datetimepicker'
-import { Ionicons } from '@expo/vector-icons'
+} from 'react-native';
+import { colors } from '@/constants/Colors';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { Ionicons } from '@expo/vector-icons';
+import { font } from '@/constants/font';
 
-export  function InputDate() {
-  const [date, setDate] = useState(new Date())
-  const [show, setShow] = useState(false)
+export function InputDate() {
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [showStart, setShowStart] = useState(false);
+  const [showEnd, setShowEnd] = useState(false);
 
-  const onChange = (event: unknown, selectedDate?: Date) => {
+  const onChangeStart = (event: unknown, selectedDate?: Date) => {
     if (selectedDate) {
-      setDate(selectedDate)
+      setStartDate(selectedDate);
     }
-    setShow(false)
-  }
+    setShowStart(false);
+  };
+
+  const onChangeEnd = (event: unknown, selectedDate?: Date) => {
+    if (selectedDate) {
+      setEndDate(selectedDate);
+    }
+    setShowEnd(false);
+  };
 
   return (
-    <View style={s.containerLabel}>
-      <TouchableOpacity
-        style={s.datePickerButton}
-        onPress={() => setShow(true)}
-      >
-        <Text style={s.datePickerText}>
-          {date.toLocaleDateString('pt-BR') || 'Selecionar Data'}
-        </Text>
-        <Ionicons name='calendar-clear-outline' color={colors.cinzas[800]} size={16}/>
-      </TouchableOpacity>
+    <View style={s.container}>
+      {/* Data Inicial */}
+      <View style={s.containerLabel}>
+        <Text style={s.label}>Data Inicial</Text>
+        <TouchableOpacity
+          style={s.datePickerButton}
+          onPress={() => setShowStart(true)}
+        >
+          <Text style={s.datePickerText}>
+            {startDate.toLocaleDateString('pt-BR')}
+          </Text>
+          <Ionicons name="calendar-clear-outline" color={colors.cinzas[800]} size={16} />
+        </TouchableOpacity>
+        {showStart && (
+          <DateTimePicker
+            value={startDate}
+            mode="date"
+            display={Platform.OS === 'ios' ? 'spinner' : 'calendar'}
+            onChange={onChangeStart}
+          />
+        )}
+      </View>
 
-      {show && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'calendar'}
-          onChange={onChange}
-        />
-      )}
+      {/* Data Final */}
+      <View style={s.containerLabel}>
+        <Text style={s.label}>Data Final</Text>
+        <TouchableOpacity
+          style={s.datePickerButton}
+          onPress={() => setShowEnd(true)}
+        >
+          <Text style={s.datePickerText}>
+            {endDate.toLocaleDateString('pt-BR')}
+          </Text>
+          <Ionicons name="calendar-clear-outline" color={colors.cinzas[800]} size={16} />
+        </TouchableOpacity>
+        {showEnd && (
+          <DateTimePicker
+            value={endDate}
+            mode="date"
+            display={Platform.OS === 'ios' ? 'spinner' : 'calendar'}
+            onChange={onChangeEnd}
+          />
+        )}
+      </View>
     </View>
-  )
+  );
 }
 
 const s = StyleSheet.create({
-  container: {},
-  contentContainer: {
-    paddingLeft: 30,
-    paddingRight: 30
-  },
-  boxFilters: {
-    display: 'flex',
+  container: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 15
+    justifyContent: 'space-between',
+    marginTop: 10,
+    gap:10
+  },
+  containerLabel: {
+    width: 170
+  },
+  label: {
+    fontSize: 14,
+    fontFamily:font.light,
+    color: colors.cinzas[800],
+    marginBottom: 3,
+    marginLeft:4
   },
   datePickerButton: {
     flexDirection: 'row',
@@ -67,15 +106,10 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.cinzas[400],
     borderRadius: 10,
-    backgroundColor: colors.cinzas[300]
+    backgroundColor: colors.Pure_White
   },
   datePickerText: {
     fontSize: 16,
     color: colors.cinzas[800]
-  },
-  containerLabel: {
-    display: 'flex',
-    gap: 8,
-    width: '48%'
   }
-})
+});

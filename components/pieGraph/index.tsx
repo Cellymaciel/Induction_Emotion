@@ -3,7 +3,10 @@ import { PieChart} from "react-native-gifted-charts"
 import { font } from "@/constants/font";
 import { View ,Text, StyleSheet} from "react-native";
 
-export function PieGraph(){
+type Props = {
+    title: String;
+   }
+export function PieGraph({ title}: Props){
    
     const pieData = [
            { value: 25, color: colors.YELLOW, text: "25%" }, // Amarelo - Alegre
@@ -13,11 +16,10 @@ export function PieGraph(){
            { value: 0, color: colors.DARK_PINK, text:"0%" }, // Outras emoções (exemplo)
            // Outras emoções (exemplo)
          ];
-   
+  
     return(
         <View style={styles_analyzes_happy.graphContainer}>
-        <Text style={styles_analyzes_happy.graphTitle}>
-      Variação de humores durante a indução:   </Text>
+        <Text style={styles_analyzes_happy.graphTitle}>{title} </Text>
      <View style={{flexDirection:'row', gap:20}}>
     <PieChart
       data={pieData}

@@ -7,7 +7,8 @@ import { InputEmotion } from "@/components/inputEmotion";
 import { InputDate } from "@/components/inputDate";
 import { BarGraph } from "@/components/barGraph";
 import { PieGraph } from "@/components/pieGraph";
-
+import { EmotionComparisonGraph } from "@/components/barGraph/emotionComparisonGraph";
+import { LineGraph } from "@/components/lineGraph/lineGraph";
 export default function Report(){
     return(
     <ScrollView>
@@ -23,10 +24,10 @@ export default function Report(){
             <View style={styles_report.contText}>
                 <Text style={styles_report.textTitle}>Selecione um filtro para a geração do relatório:</Text>
                 <View style={styles_report.contInputs}>
-                  <InputEmotion/>
                   <InputDate/>
                 </View>
-                <View style={{alignSelf:'flex-end', marginTop:14,}}>
+                <View style={{justifyContent:'space-between', marginTop:10,flexDirection:"row", gap:10 }}>
+                  <InputEmotion/>
                   <TouchableOpacity style={styles_report.btn}>
                     <Text style={{color:colors.White}}>Filtrar</Text>
                   </TouchableOpacity>
@@ -34,7 +35,8 @@ export default function Report(){
             </View>
             <View style={{marginBottom:70}}>
                 <BarGraph/>
-                <PieGraph/>
+                <PieGraph title={"Variação de humores durante todas as induções"}/>
+                <EmotionComparisonGraph/>
             </View>
           </View>
         </View>

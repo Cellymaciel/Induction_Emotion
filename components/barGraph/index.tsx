@@ -6,58 +6,58 @@ import { BarChart } from 'react-native-gifted-charts';
 
 export function BarGraph() {
   const barData = [
-    { value: 10, label: 'Instagram', frontColor: '#E6E951'},
-    { value: 4, label: 'X', frontColor: '#0092D4' },
-    { value: 6, label: 'Reddit', frontColor: '#AA0D95'},
-    { value: 8, label: 'TikTok',frontColor: '#FF3737'},
-    { value: 2, label: 'Facebook', frontColor: '#64D476'},
+    { value: 12, label: 'Alegria', frontColor: colors.YELLOW },
+    { value: 8, label: 'Tristeza', frontColor: colors.DARK_BLUE },
+    { value: 6, label: 'Neutro', frontColor: colors.GREEN },
+    { value: 5, label: 'Raiva', frontColor: '#FF3737' },
+    { value: 4, label: 'Surpresa', frontColor: '#AA0D95' },
   ];
-
- 
 
   return (
     <View style={s.container}>
-      <Text style={s.text}>Picos de Emoções nas Redes Sociais</Text>
+      <Text style={s.text}>Distribuição das Emoções Durante o uso</Text>
       <BarChart
         data={barData}
         noOfSections={5} 
-        yAxisTextStyle={{fontFamily:font.light,
-          color:colors.Black,fontSize: 12 }}
+        yAxisTextStyle={{
+          fontFamily: font.light,
+          color: colors.Black,
+          fontSize: 12
+        }}
         barBorderRadius={4}
         yAxisLabelWidth={20} 
         hideRules={true}
-        frontColor={colors.Black}
-        xAxisLabelTextStyle={{fontFamily:font.regular, color:colors.text.cinza,fontSize: 12}}
+        xAxisLabelTextStyle={{
+          fontFamily: font.regular, 
+          color: colors.text.cinza, 
+          fontSize: 12
+        }}
       />
-     <View style={{gap:10}}>
-      <Text style={s.text}>Legenda :</Text>
-      <View style={{flexDirection:"column", gap:5, alignItems:'center', justifyContent:'center'}}>
-      <View style={{flexDirection:'row', gap :22, alignItems:'center'}}>
-        <View style={s.legendItem}>
-          <Text style={[s.legendText ,{color:colors.GREEN} ]}>2 - </Text>
-          <Text style={s.subText}>Neutro</Text>
-        </View>
-        <View style={s.legendItem}>
-          <Text style={[s.legendText ,{color:colors.DARK_BLUE}]}>4 - </Text>
-          <Text style={s.subText}>Tristeza</Text>
-        </View>
-        <View style={s.legendItem}>
-          <Text style={[s.legendText ,{color:'#AA0D95'}]}>6 - </Text>
-          <Text style={s.subText}>Surpresa</Text>
+      <View style={{ gap: 10 }}>
+        <Text style={s.text}>Legenda:</Text>
+        <View style={s.legendContainer}>
+          <View style={s.legendItem}>
+            <Text style={[s.legendText, { color: colors.YELLOW }]}>12 - </Text>
+            <Text style={s.subText}>Alegria</Text>
+          </View>
+          <View style={s.legendItem}>
+            <Text style={[s.legendText, { color: colors.DARK_BLUE }]}>8 - </Text>
+            <Text style={s.subText}>Tristeza</Text>
+          </View>
+          <View style={s.legendItem}>
+            <Text style={[s.legendText, { color: colors.GREEN }]}>6 - </Text>
+            <Text style={s.subText}>Neutro</Text>
+          </View>
+          <View style={s.legendItem}>
+            <Text style={[s.legendText, { color: "#FF3737" }]}>5 - </Text>
+            <Text style={s.subText}>Raiva</Text>
+          </View>
+          <View style={s.legendItem}>
+            <Text style={[s.legendText, { color: "#AA0D95" }]}>4 - </Text>
+            <Text style={s.subText}>Surpresa</Text>
+          </View>
         </View>
       </View>
-      <View style={{flexDirection:'row', gap :22, alignItems:'center'}}>
-        <View style={s.legendItem}>
-          <Text style={[s.legendText ,{color:"#FF3737"}]}>8 - </Text>
-          <Text style={s.subText}>Raiva</Text>
-        </View>
-        <View style={s.legendItem}>
-          <Text style={[s.legendText, {color:colors.YELLOW}]}>10 - </Text>
-          <Text style={s.subText }>Alegria</Text>
-        </View> 
-      </View>
-      </View>
-     </View>
     </View>
   );
 }
@@ -85,6 +85,8 @@ const s = StyleSheet.create({
     flexWrap: "wrap",
     gap: 15,
     marginTop: 20,
+    alignItems:'center',
+    justifyContent:'center'
   },
   legendItem: {
     flexDirection: "row",
