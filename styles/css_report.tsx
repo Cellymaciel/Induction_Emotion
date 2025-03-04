@@ -26,7 +26,8 @@ const styles_report = StyleSheet.create({
         color:colors.White
     },
     containerAll:{
-        padding:18
+        padding:18,
+      
     },
     contText:{
         marginTop:20,
@@ -34,9 +35,26 @@ const styles_report = StyleSheet.create({
     },
     textTitle:{
         fontFamily:font.light,
-        fontSize:16,
+        fontSize:14,
         color:colors.Black,
         textAlign:'left'
-    }
+    },
+    contInputs:{
+        flexDirection:'row',
+         justifyContent:'space-between', 
+         gap:14,
+         marginTop:20,
+    },
+    btn:{
+        height: 49,
+        width: 170,
+        borderRadius: 10,
+        backgroundColor:colors.Black,
+        justifyContent:'center',
+        alignItems:'center',
+        paddingTop:12,
+        paddingBottom:12,
+    },
+
 });
 export {styles_report}

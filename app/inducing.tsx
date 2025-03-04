@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import { VideoList_Happy } from "@/components/videosHappy";
-import { Header } from "@/components/header";
+import { Header } from "@/components/headers/header";
 
 export default function Inducing(){
     return(

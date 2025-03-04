@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
-import { Header } from "@/components/header";
+import { Header } from "@/components/headers/header";
 import { style_index } from "@/styles/css_index";
-import { Title_Header } from "@/components/title_header";
+import { Title_Header } from "@/components/headers/title_header";
 import { Staps } from "@/components/staps";
 import { Tab_Foot } from "@/components/Tabs";
 
