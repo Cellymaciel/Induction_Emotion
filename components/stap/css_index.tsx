@@ -28,6 +28,11 @@ const style_stap = StyleSheet.create({
         fontFamily:font.regular,
         fontSize:12,
         color:'#8A959E'
-    }
+    },
+    img: {
+        resizeMode: 'cover',
+        width: 38,
+        height: 38
+      },
 })
 export {style_stap}

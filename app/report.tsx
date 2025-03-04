@@ -1,5 +1,4 @@
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import { Header } from "@/components/headers/header";
 import { styles_report } from "@/styles/css_report";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/constants/Colors";
@@ -8,7 +7,6 @@ import { InputDate } from "@/components/inputDate";
 import { BarGraph } from "@/components/barGraph";
 import { PieGraph } from "@/components/pieGraph";
 import { EmotionComparisonGraph } from "@/components/barGraph/emotionComparisonGraph";
-import { LineGraph } from "@/components/lineGraph/lineGraph";
 export default function Report(){
     return(
     <ScrollView>

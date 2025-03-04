@@ -15,34 +15,34 @@ export function Staps(){
                 </View>
             </View>
             <Stap
-                color="#0092D4"
+                imagem="tristeza"
                 title="Tristeza"
                 description="Sequência de videos tristes"
                 screenName="inducing"
             />
             <Stap
-                color="#E6E951"
+                imagem="alegria"
                 title="Alegre"
                 description="Sequência de videos alegres"
                 screenName="inducing"
 
             />
             <Stap
-                color="#FF3737"
+                imagem="raiva"
                 title="Raiva"
                 description="Sequência de videos raivosos"
                 screenName="inducing"
 
             />
             <Stap
-                color="#AA0D95"
+                imagem="assustado"
                 title="Surpresa"
                 description="Sequência de videos surpresos"
                 screenName="inducing"
 
             />
             <Stap
-                color="#64D476"
+                imagem="calmo"
                 title="Neutro"
                 description="Sequência de videos neutros"
                 screenName="inducing"

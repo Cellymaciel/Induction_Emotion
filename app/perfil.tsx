@@ -1,11 +1,16 @@
-import { View, Text } from "react-native"
+import { View, Text, Touchable, TouchableOpacity, TextInput } from "react-native"
 import { style_perfil } from "@/styles/css_perfil"
 import { Ionicons } from "@expo/vector-icons"
 import { colors } from "@/constants/Colors"
 import { font } from "@/constants/font"
 import { LinearGradient } from 'expo-linear-gradient';
+import CustomModal from "@/components/modal"
+import { useState } from "react"
 
 export default function Perfil(){
+    const [modalEmail, setModalEmail] = useState(false)
+    const [modalPasswordCurrent, setModalPasswordCurrent] = useState(false)
+    const [modalPhone, setModalPhone] = useState(false)
     return(
         <View style={style_perfil.container}>
         <LinearGradient
@@ -33,18 +38,19 @@ export default function Perfil(){
             </View>
 
             <View style={style_perfil.box_second}>
-                <View style={{padding:15, gap:15, backgroundColor:colors.Pure_White, elevation:15, borderRadius:15,marginLeft:15,marginRight:15}}>
+                <TouchableOpacity style={{padding:15, gap:15, backgroundColor:colors.Pure_White, elevation:15, borderRadius:15,marginLeft:15,marginRight:15}}>
                     <View style={{flexDirection:'row', gap:15}}>
                       <View style={{ padding:15, borderRadius:10, backgroundColor:colors.Black}}>
-                            <Ionicons name="create-outline" size={25} color={colors.Pure_White}/>
+                            <Ionicons name="person-outline" size={25} color={colors.Pure_White}/>
                       </View>
                         <View style={{flexDirection:'column',marginTop:5}}>
                             <Text style={{fontFamily:font.medium,fontSize:16,color:colors.DARK_GREY}}>Nome e sobrenome</Text>
                             <Text style={{ fontFamily:font.regular,fontSize:12,color:'#8A959E'}}>Marcelly Maciel</Text>
                         </View>    
                     </View>
-                </View>
-                <View style={{padding:15, gap:15, backgroundColor:colors.Pure_White, elevation:15, borderRadius:15,marginLeft:15,marginRight:15}}>
+                </TouchableOpacity>
+              
+                <TouchableOpacity style={{padding:15, gap:15, backgroundColor:colors.Pure_White, elevation:15, borderRadius:15,marginLeft:15,marginRight:15}} onPress={()=> setModalPasswordCurrent(true)}>
                     <View style={{flexDirection:'row', gap:15}}>
                       <View style={{ padding:15, borderRadius:10, backgroundColor:colors.Black}}>
                             <Ionicons name="create-outline" size={25} color={colors.Pure_White}/>
@@ -54,8 +60,13 @@ export default function Perfil(){
                             <Text style={{ fontFamily:font.regular,fontSize:12,color:'#8A959E'}}>*******</Text>
                         </View>    
                     </View>
-                </View>
-                <View style={{padding:15, gap:15, backgroundColor:colors.Pure_White, elevation:15, borderRadius:15,marginLeft:15,marginRight:15}}>
+                </TouchableOpacity>
+                <CustomModal visible={modalPasswordCurrent} onClose={()=> setModalPasswordCurrent(false)} title="Alterar Senha" titleButon="Salvar">
+                    <Text>Digite nova senha de 6 digitos:</Text>
+                    <TextInput placeholder="Senha" style={{ borderBottomWidth: 0.5,borderBottomColor:colors.text.cinza, width: 200, marginTop: 10 }} keyboardType="numeric"/>
+                </CustomModal>
+
+                <TouchableOpacity style={{padding:15, gap:15, backgroundColor:colors.Pure_White, elevation:15, borderRadius:15,marginLeft:15,marginRight:15}} onPress={()=> setModalEmail(true)}>
                     <View style={{flexDirection:'row', gap:15}}>
                       <View style={{ padding:15, borderRadius:10, backgroundColor:colors.Black}}>
                             <Ionicons name="create-outline" size={25} color={colors.Pure_White}/>
@@ -65,8 +76,14 @@ export default function Perfil(){
                             <Text style={{ fontFamily:font.regular,fontSize:12,color:'#8A959E'}}>email.example@gmail.com</Text>
                         </View>    
                     </View>
-                </View>   <View style={{padding:15, gap:15, backgroundColor:colors.Pure_White, elevation:15, borderRadius:15,marginLeft:15,marginRight:15}}>
-                    <View style={{flexDirection:'row', gap:15}}>
+                </TouchableOpacity> 
+                <CustomModal visible={modalEmail} onClose={()=> setModalEmail(false)} title="Alterar E-mail" titleButon="Salvar">
+                    <Text>Digite novo endereço de e-mail</Text>
+                    <TextInput placeholder="E-mail" style={{ borderBottomWidth: 0.5,borderBottomColor:colors.text.cinza, width: 200, marginTop: 10 }}/>
+                </CustomModal>  
+
+                <View style={{padding:15, gap:15, backgroundColor:colors.Pure_White, elevation:15, borderRadius:15,marginLeft:15,marginRight:15}}>
+                    <TouchableOpacity style={{flexDirection:'row', gap:15}} onPress={()=> setModalPhone(true)}>
                       <View style={{ padding:15, borderRadius:10, backgroundColor:colors.Black}}>
                             <Ionicons name="create-outline" size={25} color={colors.Pure_White}/>
                       </View>
@@ -74,7 +91,11 @@ export default function Perfil(){
                             <Text style={{fontFamily:font.medium,fontSize:16,color:colors.DARK_GREY}}>Telefone</Text>
                             <Text style={{ fontFamily:font.regular,fontSize:12,color:'#8A959E'}}>41 9 99999999</Text>
                         </View>    
-                    </View>
+                    </TouchableOpacity>
+                <CustomModal visible={modalPhone} onClose={()=> setModalPhone(false)} title="Alterar Telefone" titleButon="Salvar">
+                    <Text>Digite novo telefone:</Text>
+                    <TextInput placeholder="41 99999999" style={{ borderBottomWidth: 0.5,borderBottomColor:colors.text.cinza, width: 200, marginTop: 10 }} keyboardType="numeric"/>
+                </CustomModal>
                 </View>
             </View>
             </LinearGradient>   

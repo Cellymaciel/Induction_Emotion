@@ -1,22 +1,33 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity , Image} from "react-native";
 import { style_stap } from "./css_index";
 import { useNavigation } from "expo-router";
 
+type ImageKey = 'alegria' | 'tristeza'| 'assustado'|'raiva'|'calmo'
+
+const imageMap : Record<ImageKey, any> ={
+    alegria: require('@/assets/images/emotions/alegria.png'),
+    tristeza: require('@/assets/images/emotions/tristeza.png'),
+    assustado: require('@/assets/images/emotions/assustado.png'),
+    raiva: require('@/assets/images/emotions/raiva.png'),
+    calmo: require('@/assets/images/emotions/calmo.png')
+
+}
 type Props ={
     title: string,
     description: string
-    color?: string
     screenName: string
-    
+    imagem: ImageKey | string
 }
 
-export function Stap ({title, description, color, screenName}: Props){
+export function Stap ({title, description, imagem, screenName}: Props){
     const navigation = useNavigation()
+    const imageSource = imageMap[imagem as ImageKey] || { uri: imagem }
+
     return(
         <TouchableOpacity onPress={()=> navigation.navigate(screenName)}>          
             <View style={style_stap.container} >
-                <View  style={[style_stap.view, {backgroundColor: color}]}></View>
-                <View style={style_stap.box_text}>
+            <Image source={imageSource} style={style_stap.img} />           
+                 <View style={style_stap.box_text}>
                     <Text style={style_stap.title}>{title}</Text>
                     <Text style={style_stap.description}>{description}</Text>
                 </View>
