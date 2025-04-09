@@ -3,9 +3,44 @@ import { style_login } from "@/styles/css_login";
 import { font } from "@/constants/font";
 import { colors } from "@/constants/Colors";
 import { useNavigation } from "expo-router";
+import { useState } from "react";
+import { configs } from "@/utils/configs";
+
+
+
 
 export default function Login(){
     const navigation = useNavigation()
+    
+       const [ email, setEmail] = useState('')
+       const [ password, setPassword] = useState('')
+
+
+       const handleSubitLogin = (
+        email : string,
+        password: string,
+    ) =>{
+        if(!email || !password ){
+            alert("Preencha todos os campos")
+            return
+        } 
+        fetch(configs.baseURL+ '/users/login',{
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({email,password})
+        }). then(response => {
+            if(response.status == 200){
+                console.log('usuario Logado')
+                navigation.navigate('tabFootBar')
+            }else if ( response.status == 401){
+                alert('Email ou senha Incorreto')
+            }
+        })
+    }
+    
+
     return(
         <View style={style_login.container}>
             <Image source={require("@/assets/images/vetor1.png")}/>
@@ -18,21 +53,23 @@ export default function Login(){
                     <Text style={{fontFamily:font.regular,fontSize:18, color:colors.Black}}> Entre ou Crie sua conta</Text>
                 </View>
                 <View style={{marginTop:20, gap:20, padding:25}}>
-                    <TextInput style={style_login.input} placeholder="E-mail"/>                  
-                    <TextInput style={style_login.input} placeholder="Senha" keyboardType="numeric" />      
+                    <TextInput style={style_login.input} placeholder="E-mail" 
+                    onChangeText={text=> setEmail(text)}/>                  
+                    <TextInput style={style_login.input} placeholder="Senha" keyboardType="numeric" secureTextEntry
+                    onChangeText={text=>setPassword(text)}/>      
                     <View style={{alignItems:'flex-end'}}>
                         <Text style={{fontFamily:font.light}}> Esqueceu sua senha?</Text>
                     </View>
                 </View>
                 <View>
                 </View>   
-                <TouchableOpacity style={style_login.btn} onPress={()=> navigation.navigate('tabFootBar')}>
+                <TouchableOpacity style={style_login.btn}   onPress={() => handleSubitLogin(email, password)}>
                     <Text style={{fontFamily: font.bold, color:colors.White, fontSize:18 }}>Entrar</Text>    
                 </TouchableOpacity>  
             <View>
                 <View style={{justifyContent:'center', flexDirection:'row', marginTop:45, gap:7}}>
                     <Text style={{fontFamily:font.regular, fontSize:15, color:colors.Black}}>Não tem conta?</Text>
-                    <TouchableOpacity onPress={()=> navigation.navigate('cadastro')}>
+                    <TouchableOpacity onPress={()=>  navigation.navigate('cadastro')}>
                         <Text style={{fontFamily:font.medium, fontSize:16, color:colors.Black}}>Cadastre-se</Text>
                     </TouchableOpacity>
                 </View>
