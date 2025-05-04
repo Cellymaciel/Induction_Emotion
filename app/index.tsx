@@ -5,6 +5,7 @@ import { colors } from "@/constants/Colors";
 import { useNavigation } from "expo-router";
 import { useState } from "react";
 import { configs } from "@/utils/configs";
+import * as SecureStore from 'expo-secure-store';
 
 
 
@@ -14,33 +15,43 @@ export default function Login(){
     
        const [ email, setEmail] = useState('')
        const [ password, setPassword] = useState('')
-
-
-       const handleSubitLogin = (
-        email : string,
-        password: string,
-    ) =>{
-        if(!email || !password ){
-            alert("Preencha todos os campos")
-            return
-        } 
-        fetch(configs.baseURL+ '/users/login',{
-            method: 'POST',
-            headers:{
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({email,password})
-        }). then(response => {
-            if(response.status == 200){
-                console.log('usuario Logado')
-                navigation.navigate('tabFootBar')
-            }else if ( response.status == 401){
-                alert('Email ou senha Incorreto')
-            }
-        })
-    }
     
+        const SaveInfosUser = async (name: string, email: string, phone: string) => {
+            try{
+                await SecureStore.setItemAsync('nome', name);
+                await SecureStore.setItemAsync('email', email);
+                await SecureStore.setItemAsync('phone', String(phone));
+                console.log('Informações salvas com sucesso')
+            }
+            catch (error){
+                console.error('Erro ao salvar as informações do usuario', error)
+            }
+        }
 
+        const handleSubitLogin = async (email : string, password: string) =>{
+            if(!email || !password ){
+                alert("Preencha todos os campos")
+                return
+            }
+            fetch(configs.baseURL+ '/users/login',{
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({email,password})
+            }). then(async response => {
+    
+                if(response.status == 200){
+                    const data = await response.json();
+                    await  SaveInfosUser(String(data.name), String(data.email), String(data.phone)); // <--- CONVERSÃO PARA STRING AQUI
+                    console.log('usuario Logado')
+                    navigation.navigate('tabFootBar')
+                    return response.json()
+                }else if ( response.status == 401){
+                    alert('Email ou senha Incorreto')
+                }
+            })
+        }
     return(
         <View style={style_login.container}>
             <Image source={require("@/assets/images/vetor1.png")}/>

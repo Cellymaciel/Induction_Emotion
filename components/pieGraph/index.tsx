@@ -5,17 +5,60 @@ import { View ,Text, StyleSheet} from "react-native";
 
 type Props = {
     title: String;
+    allDetectedEmotions:string [][];
+
    }
-export function PieGraph({ title}: Props){
+
+   const calculateEmotionPercentages = (allDetectedEmotions: string[][]) => {
+    const flattenedEmotions = allDetectedEmotions.flat();
+
+    const emotionCount = flattenedEmotions.reduce((acc, emotion) => {
+        const key = emotion.toLowerCase();
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+    }, {} as Record<string, number>);
+
+    const total = flattenedEmotions.length;
+    return Object.entries(emotionCount).map(([emotion, count]) => ({
+        emotion,
+        percentage: Math.round((count / total) * 100)
+    }));
+};
+  const emotionColors = {
+    happy: colors.amarelo,
+    sad: colors.DARK_BLUE,
+    angry: colors.vermelho,
+    neutral: colors.GREEN,
+    fear: colors.roxo,
+    surprise: colors.roxo,
+    disgust: colors.vermelho
+};
+
+const emotionTranslations: Record<string, string> = {
+  happy: "Alegria",
+  sad: "Tristeza",
+  angry: "Raiva",
+  neutral: "Neutro",
+  fear: "Medo",
+  surprise: "Surpresa",
+  disgust: "Nojo",
+};
+
+
+export function PieGraph({ title, allDetectedEmotions}: Props ){
    
-    const pieData = [
-           { value: 25, color: colors.YELLOW, text: "25%" }, // Amarelo - Alegre
-           { value: 50, color: colors.DARK_BLUE, text: "50%" }, // Azul - Triste
-           { value: 10, color: colors.red, text: "10%" }, // Vermelho - Irritado
-           { value: 15, color: colors.GREEN, text:"15%" },
-           { value: 0, color: colors.DARK_PINK, text:"0%" }, // Outras emoções (exemplo)
-           // Outras emoções (exemplo)
-         ];
+  const emotionData = calculateEmotionPercentages(allDetectedEmotions);
+
+        const pieData = emotionData.map(({ emotion, percentage }) => {
+                const translatedLabel = emotionTranslations[emotion] || emotion;
+                return {
+                        value: percentage,
+                        color: emotionColors[emotion as keyof typeof emotionColors] || colors.cinzas[500],
+                        text: `${percentage}%`,
+                        label: translatedLabel
+                };
+        });
+
   
     return(
         <View style={styles_analyzes_happy.graphContainer}>
@@ -24,8 +67,6 @@ export function PieGraph({ title}: Props){
     <PieChart
       data={pieData}
       donut
-      showText
-      textColor={colors.Black}
       radius={80}
       innerRadius={50}
       textSize={12}
@@ -35,27 +76,15 @@ export function PieGraph({ title}: Props){
     />
     
     <View style={styles_analyzes_happy.legend}>
-      <View style={styles_analyzes_happy.legendItem}>
-        <View style={[styles_analyzes_happy.legendColor, { backgroundColor: colors.YELLOW }]} />
-        <Text style={styles_analyzes_happy.txt_legende}>Alegre - 25%</Text>
-      </View>
-      <View style={styles_analyzes_happy.legendItem}>
-        <View style={[styles_analyzes_happy.legendColor, { backgroundColor: colors.DARK_BLUE }]} />
-        <Text style={styles_analyzes_happy.txt_legende}>Triste - 50%</Text>
-      </View>
-      <View style={styles_analyzes_happy.legendItem}>
-        <View style={[styles_analyzes_happy.legendColor, { backgroundColor:colors.red }]} />
-        <Text style={styles_analyzes_happy.txt_legende}>Raivoso - 10%</Text>
-      </View>
-      <View style={styles_analyzes_happy.legendItem}>
-        <View style={[styles_analyzes_happy.legendColor, { backgroundColor:colors.GREEN}]} />
-        <Text style={styles_analyzes_happy.txt_legende}>Neutro - 15%</Text>
-      </View>
-      <View style={styles_analyzes_happy.legendItem}>
-        <View style={[styles_analyzes_happy.legendColor, { backgroundColor:colors.DARK_PINK}]} />
-        <Text style={styles_analyzes_happy.txt_legende}>Surpresa - 0%</Text>
-      </View>
-    </View>
+                    {pieData.map((item, index) => (
+                        <View key={index} style={styles_analyzes_happy.legendItem}>
+                            <View style={[styles_analyzes_happy.legendColor, { backgroundColor: item.color }]} />
+                            <Text style={styles_analyzes_happy.txt_legende}>
+                                {item.label} - {item.value}%
+                            </Text>
+                        </View>
+                    ))}
+                </View>
   </View>
   </View>
 

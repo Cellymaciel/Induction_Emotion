@@ -4,26 +4,37 @@ import { BarChart } from "react-native-gifted-charts";
 import { colors } from "@/constants/Colors";
 import { font } from "@/constants/font";
 
-export function EmotionComparisonGraph() {
+interface EmotionComparisonGraphProps {
+  correctPredictionsCount: number;
+  totalInductions: number;
+}
+
+export function EmotionComparisonGraph({ correctPredictionsCount, totalInductions }: EmotionComparisonGraphProps) {
+  const correctPercentage = totalInductions > 0 ? (correctPredictionsCount / totalInductions) * 100 : 0;
+  const incorrectPercentage = 100 - correctPercentage;
+
   const barData = [
-    { value: 70, label: "Esperada", frontColor: "#FFB74D" }, // Exemplo: Alegria esperada foi dominante 70% das vezes
-    { value: 30, label: "Detectada", frontColor: "#64B5F6" }, // Exemplo: Emoções diferentes detectadas 30% das vezes
+    { value: correctPercentage, label: `Corretas`, frontColor: colors.GREEN },
+    { value: incorrectPercentage, label: `Incorretas`, frontColor: colors.vermelho },
   ];
 
   return (
     <View style={s.container}>
-      <Text style={s.title}>Comparação: Emoção Esperada vs. Emoção Detectada</Text>
+      <Text style={s.title}>Precisão da Indução Emocional</Text>
       <BarChart
         data={barData}
         noOfSections={5}
+        maxValue={100}
         barBorderRadius={8}
-        yAxisLabelWidth={30}
+        yAxisLabelWidth={36}
         hideRules={true}
-        xAxisLength={185}
+        spacing={50}
+        xAxisLength={200}
         yAxisTextStyle={{
           fontFamily: font.light,
           color: colors.Black,
           fontSize: 12,
+          formatLabel: (value: any) => `${value}%`, 
         }}
         xAxisLabelTextStyle={{
           fontFamily: font.regular,
@@ -33,18 +44,17 @@ export function EmotionComparisonGraph() {
       />
       <View style={s.legendContainer}>
         <View style={s.legendItem}>
-          <View style={[s.legendColor, { backgroundColor: "#FFB74D" }]} />
-          <Text style={s.legendText}>Emoção Esperada</Text>
+          <View style={[s.legendColor, { backgroundColor: colors.GREEN }]} />
+          <Text style={s.legendText}>Induções Corretas ({correctPercentage.toFixed(0)}%)</Text>
         </View>
         <View style={s.legendItem}>
-          <View style={[s.legendColor, { backgroundColor: "#64B5F6" }]} />
-          <Text style={s.legendText}>Outras Emoções Detectadas</Text>
+          <View style={[s.legendColor, { backgroundColor: colors.vermelho }]} />
+          <Text style={s.legendText}>Induções Incorretas ({incorrectPercentage.toFixed(0)}%)</Text>
         </View>
       </View>
     </View>
   );
 }
-
 const s = StyleSheet.create({
   container: {
     borderRadius: 16,
@@ -62,9 +72,10 @@ const s = StyleSheet.create({
     marginBottom: 10,
   },
   legendContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "center",
     marginTop: 10,
+    paddingLeft:15,
     gap: 15,
   },
   legendItem: {
@@ -79,8 +90,8 @@ const s = StyleSheet.create({
   },
   legendText: {
     fontFamily: font.regular,
-    fontSize: 12,
-    color: colors.text.cinza,
+    fontSize: 14,
+    color: colors.Black,
   },
 });
 

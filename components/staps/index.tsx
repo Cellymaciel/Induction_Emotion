@@ -19,19 +19,21 @@ export function Staps(){
                 title="Tristeza"
                 description="Sequência de videos tristes"
                 screenName="inducing"
+                emotionInduction="sad"
             />
             <Stap
                 imagem="alegria"
                 title="Alegre"
                 description="Sequência de videos alegres"
                 screenName="inducing"
-
+                emotionInduction="happy"
             />
             <Stap
                 imagem="raiva"
                 title="Raiva"
                 description="Sequência de videos raivosos"
                 screenName="inducing"
+                emotionInduction="angry"
 
             />
             <Stap
@@ -39,6 +41,7 @@ export function Staps(){
                 title="Surpresa"
                 description="Sequência de videos surpresos"
                 screenName="inducing"
+                emotionInduction="surprise"
 
             />
             <Stap
@@ -46,7 +49,7 @@ export function Staps(){
                 title="Neutro"
                 description="Sequência de videos neutros"
                 screenName="inducing"
-
+                emotionInduction="neutral"
             />
 
         </View>

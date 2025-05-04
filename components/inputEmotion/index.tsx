@@ -4,51 +4,59 @@ import { Picker } from '@react-native-picker/picker'
 import { colors } from "@/constants/Colors";
 import { font } from "@/constants/font";
 
-export function InputEmotion(){
-  
-    const [selectedEmotion, setSelectedEmotion] = useState('');
-
-    return(
-        <View style={s.container}>
-            <View style={s.pickerWrapper}>
-                <Picker selectedValue={selectedEmotion}
-                        onValueChange={(itemValue) => setSelectedEmotion(itemValue)}
-                        style={s.picker}
-                        >
-                    <Picker.Item label='Emoção' value= "" color="#999999" style={s.PickerText}/>
-                    <Picker.Item label= 'Alegria' value= 'alegre' style={s.PickerText} />
-                    <Picker.Item label= 'Tristeza' value = 'tristeza'style={s.PickerText} />
-                    <Picker.Item label= 'Raiva' value = 'raiva'style={s.PickerText} />
-                    <Picker.Item label= 'Surpresa' value = 'surpresa'style={s.PickerText} />
-                    <Picker.Item label= 'Neutro' value = 'neutro'style={s.PickerText} />
-                </Picker>
-            </View>
-        
-        </View>
-    )
+interface InputEmotionProps {
+  onEmotionChange: (emotion: string) => void;
 }
+
+const emotions = ['Todas', 'Alegria', 'Tristeza', 'Raiva', 'Neutro', 'Medo', 'Surpresa', 'Nojo']; 
+
+export function InputEmotion({ onEmotionChange }: InputEmotionProps) {
+  const [selectedEmotion, setSelectedEmotion] = useState<string>('Todas');
+
+  const handleEmotionSelection = (itemValue: string) => {
+    setSelectedEmotion(itemValue);
+    onEmotionChange(itemValue);
+  };
+
+  return (
+    <View style={s.container}>
+      <Text style={s.label}>Filtrar Emoção</Text>
+      <View style={s.pickerContainer}>
+        <Picker
+          selectedValue={selectedEmotion}
+          onValueChange={handleEmotionSelection}
+          style={s.picker}
+        >
+          {emotions.map((emotion) => (
+            <Picker.Item key={emotion} label={emotion} value={emotion} />
+          ))}
+        </Picker>
+      </View>
+    </View>
+  );
+}
+
 const s = StyleSheet.create({
-    container: {
-     
-      },
-      pickerWrapper: {
-        backgroundColor: colors.Pure_White,
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: colors.cinzas[400],
-        width: 170,
-        justifyContent: 'center',
-        overflow:'visible'
-      },
-      picker: {
-        height: 49,
-        color: colors.text.cinza,
-        paddingHorizontal: 10,
-        
-      },
-        PickerText: {
-        fontSize: 15,
-        color: colors.cinzas[800],
-        fontFamily:font.regular
-      },
+  container: {
+    
+  },
+  label: {
+    fontSize: 14,
+    fontFamily: font.light,
+    color: colors.cinzas[800],
+    marginBottom: 3,
+    marginLeft: 4,
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: colors.cinzas[400],
+    borderRadius: 10,
+    backgroundColor: colors.Pure_White,
+    height: 49,
+    width:170,
+    justifyContent: 'center',
+  },
+  picker: {
+    color: colors.cinzas[800],
+  },
 })

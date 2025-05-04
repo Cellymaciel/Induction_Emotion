@@ -54,6 +54,7 @@ const styles_report = StyleSheet.create({
         alignItems:'center',
         paddingTop:12,
         paddingBottom:12,
+        marginTop:20
     },
 
 });

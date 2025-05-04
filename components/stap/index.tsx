@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity , Image} from "react-native";
 import { style_stap } from "./css_index";
-import { useNavigation } from "expo-router";
+import {router } from "expo-router";
 
 type ImageKey = 'alegria' | 'tristeza'| 'assustado'|'raiva'|'calmo'
 
@@ -17,14 +17,14 @@ type Props ={
     description: string
     screenName: string
     imagem: ImageKey | string
+    emotionInduction: string
 }
 
-export function Stap ({title, description, imagem, screenName}: Props){
-    const navigation = useNavigation()
+export function Stap ({title, description, imagem, screenName, emotionInduction}: Props){
     const imageSource = imageMap[imagem as ImageKey] || { uri: imagem }
 
     return(
-        <TouchableOpacity onPress={()=> navigation.navigate(screenName)}>          
+        <TouchableOpacity onPress={()=> router.navigate({pathname :screenName, params:{ emotionInduction : emotionInduction}})}>          
             <View style={style_stap.container} >
             <Image source={imageSource} style={style_stap.img} />           
                  <View style={style_stap.box_text}>

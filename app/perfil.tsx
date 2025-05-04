@@ -1,22 +1,69 @@
-import { View, Text, Touchable, TouchableOpacity, TextInput } from "react-native"
+import { View, Text, Touchable, TouchableOpacity, TextInput, Alert } from "react-native"
 import { style_perfil } from "@/styles/css_perfil"
 import { Ionicons } from "@expo/vector-icons"
 import { colors } from "@/constants/Colors"
 import { font } from "@/constants/font"
 import { LinearGradient } from 'expo-linear-gradient';
 import CustomModal from "@/components/modal"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useRoute } from "@react-navigation/native"
+import { configs } from "@/utils/configs"
+import { useSearchParams } from "expo-router/build/hooks"
+import { getUserEmail } from "@/utils/infos"
 
 export default function Perfil(){
     const [modalEmail, setModalEmail] = useState(false)
     const [modalPasswordCurrent, setModalPasswordCurrent] = useState(false)
     const [modalPhone, setModalPhone] = useState(false)
+    const [userNome, setUserNome] = useState<string | null>(null);
+    const [userPhone, setUserPhone] = useState<string | null>(null);
+    const [userEmail, setUserEmail] = useState<string | null>(null);
+
+   
+
+    const searchParams = useSearchParams()
+    const  email = String(searchParams.get('email')) || "";
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+              const storedEmail = await getUserEmail(email);
+                        getUserEmail(storedEmail)
+                  console.log(storedEmail)
+
+            try {
+                const response = await fetch(configs.baseURL +`/users/profile/${storedEmail}`,{
+                    method:'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                
+                if (response.status === 200) {
+                    const data = await response.json();
+                    setUserNome(data.name);
+                    setUserEmail(data.email);
+                    setUserPhone(data.phone);
+                    console.log("Dados obtidos com sucesso!")
+                }else{
+                    Alert.alert('Erro', 'Ocorreu um erro ao buscar os dados do usuário.');
+
+                }
+               
+            } catch (error) {
+                console.error("Erro ao buscar dados do perifl perfil:", error);
+            }
+        };
+
+         fetchUserProfile()
+    }, []);
+
+
     return(
         <View style={style_perfil.container}>
         <LinearGradient
-                colors={[colors.Black, colors.White]} // Definição das cores
-                start={{ x: 0, y: 0 }} // Começa no canto esquerdo
-                end={{ x: 1, y: 0 }} // Termina no canto direito
+                colors={[colors.Black, colors.White]} 
+                start={{ x: 0, y: 0 }} 
+                end={{ x: 1, y: 0 }} 
                   >
                  <View style={style_perfil.box_first}>
                 <View style={{flexDirection:'row', gap:270 , marginTop:15, marginLeft:15}}>
@@ -24,11 +71,11 @@ export default function Perfil(){
                     <Ionicons name="notifications" color={colors.White} size={30}/>
                 </View>
                 <View style={{alignItems:'center', justifyContent:'center', marginTop:35}}>
-                    <Text style={{fontFamily:font.bold, color:colors.Pure_White, fontSize:36}}>Marcelly Maciel</Text>
+                    <Text style={{fontFamily:font.bold, color:colors.Pure_White, fontSize:36}}>{userNome}</Text>
                 </View>
                 <View style={{marginTop:10, alignItems:'center',justifyContent:'center'}}>
                     <Text style={{fontFamily:font.regular, fontSize:14, color:colors.Pure_White}}>
-                        email.example@gmail.com
+                        {userEmail}
                     </Text>
                 </View>
                 <View style={{width:'90%',height:0.5,backgroundColor:'#9FBFF4',marginTop:25,marginLeft:20 }}/>
@@ -45,7 +92,7 @@ export default function Perfil(){
                       </View>
                         <View style={{flexDirection:'column',marginTop:5}}>
                             <Text style={{fontFamily:font.medium,fontSize:16,color:colors.DARK_GREY}}>Nome e sobrenome</Text>
-                            <Text style={{ fontFamily:font.regular,fontSize:12,color:'#8A959E'}}>Marcelly Maciel</Text>
+                            <Text style={{ fontFamily:font.regular,fontSize:12,color:'#8A959E'}}>{userNome}</Text>
                         </View>    
                     </View>
                 </TouchableOpacity>
@@ -57,7 +104,7 @@ export default function Perfil(){
                       </View>
                         <View style={{flexDirection:'column',marginTop:5}}>
                             <Text style={{fontFamily:font.medium,fontSize:16,color:colors.DARK_GREY}}>Senha</Text>
-                            <Text style={{ fontFamily:font.regular,fontSize:12,color:'#8A959E'}}>*******</Text>
+                            <Text style={{ fontFamily:font.regular,fontSize:12,color:'#8A959E'}}>*****</Text>
                         </View>    
                     </View>
                 </TouchableOpacity>
@@ -73,7 +120,7 @@ export default function Perfil(){
                       </View>
                         <View style={{flexDirection:'column',marginTop:5}}>
                             <Text style={{fontFamily:font.medium,fontSize:16,color:colors.DARK_GREY}}>E-mail</Text>
-                            <Text style={{ fontFamily:font.regular,fontSize:12,color:'#8A959E'}}>email.example@gmail.com</Text>
+                            <Text style={{ fontFamily:font.regular,fontSize:12,color:'#8A959E'}}>{userEmail}</Text>
                         </View>    
                     </View>
                 </TouchableOpacity> 
@@ -89,7 +136,7 @@ export default function Perfil(){
                       </View>
                         <View style={{flexDirection:'column',marginTop:5}}>
                             <Text style={{fontFamily:font.medium,fontSize:16,color:colors.DARK_GREY}}>Telefone</Text>
-                            <Text style={{ fontFamily:font.regular,fontSize:12,color:'#8A959E'}}>41 9 99999999</Text>
+                            <Text style={{ fontFamily:font.regular,fontSize:12,color:'#8A959E'}}>{userPhone}</Text>
                         </View>    
                     </TouchableOpacity>
                 <CustomModal visible={modalPhone} onClose={()=> setModalPhone(false)} title="Alterar Telefone" titleButon="Salvar">

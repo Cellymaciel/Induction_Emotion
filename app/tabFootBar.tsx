@@ -1,17 +1,28 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "@/app/home";
-import Neutral from "@/app/neutral";
-import Sad from "@/app/sad";
+
 import { View } from "react-native";
 import { colors } from "@/constants/Colors";
 import { font } from "@/constants/font";
 import { Ionicons } from "@expo/vector-icons";
 import Perfil from "./perfil";
 import Report from "./report";
+import { useEffect, useState } from "react";
+import { getUserEmail } from "@/utils/infos";
 
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
+    const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function carregarDadosDoUsuario() {
+      const storedEmail = await getUserEmail();
+      setUserEmail(storedEmail);
+    }
+
+    carregarDadosDoUsuario();
+  }, []);
     return (     
         <Tab.Navigator screenOptions={{headerShown:false, tabBarStyle:{
             backgroundColor:colors.Pure_White,

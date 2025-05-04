@@ -4,58 +4,73 @@ import React from "react";
 import { View, Text , StyleSheet} from "react-native";
 import { BarChart } from 'react-native-gifted-charts';
 
-export function BarGraph() {
-  const barData = [
-    { value: 12, label: 'Alegria', frontColor: colors.YELLOW },
-    { value: 8, label: 'Tristeza', frontColor: colors.DARK_BLUE },
-    { value: 6, label: 'Neutro', frontColor: colors.GREEN },
-    { value: 5, label: 'Raiva', frontColor: '#FF3737' },
-    { value: 4, label: 'Surpresa', frontColor: '#AA0D95' },
-  ];
+interface BarGraphProps {
+  emotionCounts: { emotion: string; count: number }[];
+}
+const emotionTranslations: Record<string, string> = {
+  happy: "Alegria",
+  sad: "Tristeza",
+  angry: "Raiva",
+  neutral: "Neutro",
+  fear: "Medo",
+  surprise: "Surpresa",
+  disgust: "Nojo",
+};
+
+export function BarGraph({ emotionCounts }: BarGraphProps) {
+  const barData = emotionCounts.map(item => ({
+    value: item.count,
+    label: item.emotion,
+    frontColor: getEmotionColor(item.emotion), 
+  }));
+
+  function getEmotionColor(emotion: string) {
+    switch (emotion.toLowerCase()) {
+      case 'happy':
+        return colors.amarelo;
+      case 'sad':
+        return colors.DARK_BLUE;
+      case 'neutral':
+        return colors.GREEN;
+      case 'angry':
+        return '#FF3737';
+      case 'surprise':
+        return '#AA0D95';
+      default:
+        return colors.cinzas[500]; 
+    }
+  }
 
   return (
     <View style={s.container}>
       <Text style={s.text}>Distribuição das Emoções Durante o uso</Text>
       <BarChart
         data={barData}
-        noOfSections={5} 
+        noOfSections={5}
         yAxisTextStyle={{
           fontFamily: font.light,
           color: colors.Black,
           fontSize: 12
         }}
         barBorderRadius={4}
-        yAxisLabelWidth={20} 
+        yAxisLabelWidth={36}
         hideRules={true}
+        maxValue={100}
         xAxisLabelTextStyle={{
-          fontFamily: font.regular, 
-          color: colors.text.cinza, 
+          fontFamily: font.regular,
+          color: colors.text.cinza,
           fontSize: 12
         }}
       />
       <View style={{ gap: 10 }}>
         <Text style={s.text}>Legenda:</Text>
         <View style={s.legendContainer}>
-          <View style={s.legendItem}>
-            <Text style={[s.legendText, { color: colors.YELLOW }]}>12 - </Text>
-            <Text style={s.subText}>Alegria</Text>
-          </View>
-          <View style={s.legendItem}>
-            <Text style={[s.legendText, { color: colors.DARK_BLUE }]}>8 - </Text>
-            <Text style={s.subText}>Tristeza</Text>
-          </View>
-          <View style={s.legendItem}>
-            <Text style={[s.legendText, { color: colors.GREEN }]}>6 - </Text>
-            <Text style={s.subText}>Neutro</Text>
-          </View>
-          <View style={s.legendItem}>
-            <Text style={[s.legendText, { color: "#FF3737" }]}>5 - </Text>
-            <Text style={s.subText}>Raiva</Text>
-          </View>
-          <View style={s.legendItem}>
-            <Text style={[s.legendText, { color: "#AA0D95" }]}>4 - </Text>
-            <Text style={s.subText}>Surpresa</Text>
-          </View>
+          {emotionCounts.map(item => (
+            <View key={item.emotion} style={s.legendItem}>
+              <Text style={[s.legendText, { color: getEmotionColor(item.emotion) }]}>{item.count}% - </Text>
+              <Text style={s.subText}>{emotionTranslations[item.emotion.toLowerCase() as keyof typeof emotionTranslations] || item.emotion}</Text>
+            </View>
+          ))}
         </View>
       </View>
     </View>

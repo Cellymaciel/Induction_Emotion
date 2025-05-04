@@ -11,7 +11,14 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Ionicons } from '@expo/vector-icons';
 import { font } from '@/constants/font';
 
-export function InputDate() {
+
+
+
+interface InputDateProps {
+  onDateChange: (start: Date, end: Date) => void;
+}
+
+export function InputDate({ onDateChange }: InputDateProps) {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [showStart, setShowStart] = useState(false);
@@ -20,6 +27,7 @@ export function InputDate() {
   const onChangeStart = (event: unknown, selectedDate?: Date) => {
     if (selectedDate) {
       setStartDate(selectedDate);
+      onDateChange(selectedDate, endDate);
     }
     setShowStart(false);
   };
@@ -27,6 +35,7 @@ export function InputDate() {
   const onChangeEnd = (event: unknown, selectedDate?: Date) => {
     if (selectedDate) {
       setEndDate(selectedDate);
+      onDateChange(startDate, selectedDate); 
     }
     setShowEnd(false);
   };

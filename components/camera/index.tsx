@@ -8,7 +8,12 @@ import { useFocusEffect } from "expo-router";
 
 type Emotion = 'happy' | 'sad' | 'angry' | 'neutral' | 'surprise' | 'fear' | 'disgust';
 
-export function Camera (){
+
+interface CameraProps {
+    onEmotionDetected: (emotionData: { emotion: Emotion; time: string; videoId: number }) => void;
+    currentVideoId: number;
+}
+export function Camera({ onEmotionDetected, currentVideoId }: CameraProps){
     const [ permissions, setPermissions] = useCameraPermissions()
     const cameraRef = useRef<CameraView|null>(null)
     const [isProcessing, setProcessing] = useState<Boolean>(false)
@@ -39,12 +44,17 @@ export function Camera (){
                     {format: SaveFormat.JPEG, base64:true}
                 );
                 if(resizeImage.base64){
-                    const response = await axios.post('http://192.168.5.9:5000/recognize', {
+                    const response = await axios.post('http://192.168.1.110:5000/recognize', {
                         image : resizeImage.base64
                     });
-                    if(response.data.emotion){
-                        console.log("emoção detectada : ", response.data.emotion)
-                        setEmotion(response.data.emotion)
+                    if (response.data.emotion) {
+                        console.log("emotion dominate : ",response.data)
+                        setEmotion(response.data.emotion);
+                        onEmotionDetected({
+                            emotion: response.data.emotion,
+                            time: new Date().toISOString(),
+                            videoId: currentVideoId,
+                        });
                     }
                 }
             }
