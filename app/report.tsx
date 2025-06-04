@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Alert, Platform } from "react-native";
 import { styles_report } from "@/styles/css_report";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "@/constants/Colors";
@@ -8,9 +8,15 @@ import { BarGraph } from "@/components/barGraph";
 import { PieGraph } from "@/components/pieGraph";
 import { EmotionComparisonGraph } from "@/components/barGraph/emotionComparisonGraph";
 import { useSearchParams } from "expo-router/build/hooks";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getUserEmail } from "@/utils/infos";
 import { configs } from "@/utils/configs";
+import * as Print from 'expo-print';
+import { shareAsync } from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
+import { htmlPDF } from "@/components/htmlPDF";
+import ViewShot, { captureRef } from 'react-native-view-shot'; 
+
 
 interface InducingResponse {
   user: any; 
@@ -37,6 +43,9 @@ export default function Report(){
   const [filterStartDate, setFilterStartDate] = useState<Date | null>(null);
   const [filterEndDate, setFilterEndDate] = useState<Date | null>(null);
   const [filterEmotion, setFilterEmotion] = useState<string | null>(null);
+  const barGraphRef = useRef<ViewShot>(null); 
+    const pieGraphRef = useRef<ViewShot>(null);   
+    const comparisonGraphRef = useRef<ViewShot>(null);
 
 
   useEffect(() => {
@@ -100,7 +109,69 @@ const applyFilters = () => {
   setFilteredInducingData(filteredData);
 };
 
-// Dados para os gráficos (usando filteredInducingData agora)
+
+
+  
+const captureGraph = async (ref: React.RefObject<View>): Promise<string | null> => {
+  try {
+    if (ref.current) {
+      const uri = await captureRef(ref, {
+        format: 'png',
+        quality: 1, 
+      });
+      return uri;
+    }
+    return null;
+  } catch (error) {
+    console.error("Erro ao capturar o gráfico:", error);
+    return null;
+  }
+};
+const captureViewAsBase64 = useCallback(async (ref: React.RefObject<ViewShot>): Promise<string | null> => { // Change to ViewShot
+  if (ref.current) {
+      try {
+          const result = await captureRef(ref, {
+              format: "png",
+              quality: 0.9,
+              result: "base64",
+          });
+          return `data:image/png;base64,${result}`;
+      } catch (error) {
+          console.error("Erro ao capturar view:", error);
+          return null;
+      }
+  } else {
+      console.warn("Ref da view não está definida.");
+      return null;
+  }
+}, []);
+
+const handleDownloadPDF = async () => {
+  setLoading(true);
+  try {
+      const barGraphBase64 = await captureViewAsBase64(barGraphRef);
+      const pieGraphBase64 = await captureViewAsBase64(pieGraphRef);
+      const comparisonGraphBase64 = await captureViewAsBase64(comparisonGraphRef);
+
+      let htmlContent = htmlPDF({
+          title: 'Relatório de Emoções',
+          data: filteredInducingData.length > 0 ? filteredInducingData : inducingData,
+          barGraphBase64: barGraphBase64 ?? "",
+          pieGraphBase64: pieGraphBase64 ?? "",
+          comparisonGraphBase64: comparisonGraphBase64 ?? "",
+      });
+
+      const { uri } = await Print.printToFileAsync({ html: htmlContent });
+      console.log('Arquivo PDF salvo em:', uri);
+      await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' });
+
+  } catch (error) {
+      console.error("Erro ao gerar e compartilhar o PDF:", error);
+      Alert.alert("Erro", "Ocorreu um erro ao gerar e compartilhar o PDF.");
+  } finally {
+      setLoading(false);
+  }
+};
 const dataToUse = filteredInducingData.length > 0 ? filteredInducingData : inducingData;
 
 const emotionCountsForBarGraph = dataToUse.reduce((acc, inducing) => {
@@ -122,15 +193,12 @@ const correctPredictionsCount = dataToUse.filter(
 ).length;
 
 const allEmotionsForAllInductions = dataToUse.map((inducing) => inducing.allDetectedEmotions);
-
-  
-
     return(
     <ScrollView>
         <View style={styles_report.container}>
           <View style={styles_report.header}>
             <Text style={styles_report.titleHeader}>Relatório Geral</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleDownloadPDF}>
               <View style={{flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
                   <Ionicons name="download-outline" size={18} color={colors.White}/>
                   <Text style={styles_report.textIcon}>Baixar</Text>
@@ -151,14 +219,20 @@ const allEmotionsForAllInductions = dataToUse.map((inducing) => inducing.allDete
                 </View>
             </View>
             <View style={{marginBottom:70}}>
-                <BarGraph emotionCounts={barGraphData}/>
-                {inducingData.length > 0 && (
-                   <PieGraph
-                        title={"Variação de Humores"}
-                         allDetectedEmotions={allEmotionsForAllInductions}
-                      />
+            <ViewShot ref={barGraphRef}>
+                        <BarGraph emotionCounts={barGraphData} />
+                    </ViewShot>
+                    {inducingData.length > 0 && (
+                        <ViewShot ref={pieGraphRef}>
+                            <PieGraph
+                                title={"Variação de Humores"}
+                                allDetectedEmotions={allEmotionsForAllInductions}
+                            />
+                        </ViewShot>
                     )}
-                <EmotionComparisonGraph correctPredictionsCount={correctPredictionsCount} totalInductions={totalInductions}/>
+                    <ViewShot ref={comparisonGraphRef}>
+                        <EmotionComparisonGraph correctPredictionsCount={correctPredictionsCount} totalInductions={totalInductions} />
+                    </ViewShot>
             </View>
           </View>
         </View>
