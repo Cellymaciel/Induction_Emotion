@@ -1,9 +1,8 @@
 import { View, Text } from "react-native";
-import { VideoList_Happy } from "@/components/InducingVideos";
+import { VideoList } from "@/components/VideoList";
 import { Header } from "@/components/headers/header";
-import { Camera } from "@/components/camera";
-import { useCallback, useState } from "react";
-import { useSearchParams } from "expo-router/build/hooks";
+import { useCallback, useEffect, useState } from "react";
+import { useLocalSearchParams } from "expo-router/build/hooks";
 
 
 interface EmotionData {
@@ -12,32 +11,65 @@ interface EmotionData {
     videoId: number;
 }
 
-
 const emotionMap = {
-    1: 'happy',
-    2: 'sad',
-    3: 'angry',
-    4: 'neutral',
-    5: 'surprise',
+    happy: 'Alegria', 
+    sad: 'Tristeza',
+    angry: 'Raiva',
+    neutral: 'Neutro',
+    surprise: 'Surpresa',
+    videosSelect: 'Videos da Galeria', 
 };
 
 export default function Inducing(){
-    const searchParams = useSearchParams()
-    const   emotionInductionNumber = Number(searchParams.get("emotionInduction")) || NaN;
-     const   emocaoEscolha = emotionMap[emotionInductionNumber] || ""; // Converte número para string, ou string vazia se não houver correspondência
-
-
+    const searchParams = useLocalSearchParams()
+    const emotionInduction = (searchParams.emotionInduction || null) as keyof typeof emotionMap | null;
+    const selectedVideoUris = searchParams.videos;
+    const videosFromGallery: string[] | null = typeof selectedVideoUris === "string" ? JSON.parse(selectedVideoUris) : null;
+    const [videosToPlay, setVideosToPlay] = useState<any[]>([]);
+    const [emocaoEscolha, setEmocaoEscolha] = useState<string>("");
     const [detectedEmotions, setDetectedEmotions] = useState<EmotionData[]>([]);
 
+  useEffect(() => {
+        if (emotionInduction === "videosSelect" && selectedVideoUris) {
+            try {
+                const parsedVideos: string[] = typeof selectedVideoUris === "string" ? JSON.parse(selectedVideoUris) : [];
+                const videoData = parsedVideos.map((uri, index) => ({
+                    id: index,
+                    uri: uri, 
+                    expectedEmotion: "user_selected"
+                }));
+                setVideosToPlay(videoData);
+            } catch (e) {
+                console.error("Erro ao processar URIs da galeria:", e);
+                setVideosToPlay([]);
+            }
+        } else {
+         
+            setVideosToPlay([]);
+        }
+        setEmocaoEscolha(emotionInduction ? emotionMap[emotionInduction] : "");
+    }, [emotionInduction, selectedVideoUris]);
+
     const handleEmotionDetected = useCallback((emotionData: EmotionData) => {
-      
+        setDetectedEmotions((prevEmotions) => [...prevEmotions, emotionData]);
     }, []);
 
-   
     return(
         <View style={{padding:15}}>
             <Header/>
-            <VideoList_Happy onEmotionDetected={handleEmotionDetected} emocaoEscolha={emocaoEscolha} />
-        </View>
+ {videosToPlay ? (
+                <VideoList
+                    videos={videosToPlay} 
+                    onEmotionDetected={handleEmotionDetected}
+                    emocaoEscolha={emocaoEscolha}
+                />
+            ) : (
+                <VideoList
+                        onEmotionDetected={handleEmotionDetected}
+                        emocaoEscolha={emocaoEscolha} videos={[]}                />
+            )}      
+             <Text style={{ marginTop: 20, textAlign: 'center', fontSize: 18, fontWeight: 'bold' }}>
+            </Text>
+              </View>
     )
 }

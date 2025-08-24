@@ -2,29 +2,39 @@ import { View, Text, TouchableOpacity , Image} from "react-native";
 import { style_stap } from "./css_index";
 import {router } from "expo-router";
 
-type ImageKey = 'alegria' | 'tristeza'| 'assustado'|'raiva'|'calmo'
+type ImageKey = 'alegria' | 'tristeza'| 'assustado'|'raiva'|'calmo'|'photo'
 
 const imageMap : Record<ImageKey, any> ={
     alegria: require('@/assets/images/emotions/alegria.png'),
     tristeza: require('@/assets/images/emotions/tristeza.png'),
     assustado: require('@/assets/images/emotions/assustado.png'),
     raiva: require('@/assets/images/emotions/raiva.png'),
-    calmo: require('@/assets/images/emotions/calmo.png')
+    calmo: require('@/assets/images/emotions/calmo.png'),
+    photo: require('@/assets/images/emotions/ic_pt.jpg')
 
 }
 type Props ={
     title: string,
     description: string
-    screenName: string
+    screenName?: string
     imagem: ImageKey | string
     emotionInduction: string
+    onPress?: ()=> void;
 }
 
-export function Stap ({title, description, imagem, screenName, emotionInduction}: Props){
+export function Stap ({title, description, imagem, screenName, emotionInduction, onPress}: Props){
     const imageSource = imageMap[imagem as ImageKey] || { uri: imagem }
 
+     const handlePress = () => {
+    if (onPress) {
+      onPress(); 
+    } else if (screenName) {
+      router.navigate({ pathname: screenName, params: { emotionInduction: emotionInduction } });
+    }
+  };
+
     return(
-        <TouchableOpacity onPress={()=> router.navigate({pathname :screenName, params:{ emotionInduction : emotionInduction}})}>          
+        <TouchableOpacity onPress={handlePress}>          
             <View style={style_stap.container} >
             <Image source={imageSource} style={style_stap.img} />           
                  <View style={style_stap.box_text}>

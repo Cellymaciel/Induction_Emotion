@@ -29,13 +29,10 @@ def recognize():
             print(f"Failed to convert image to numpy array: {str(e)}")
             return jsonify({"error": f"Failed to convert image to numpy array: {str(e)}"}), 500
 
-        # Análise da emoção usando DeepFace
         try:
             results = DeepFace.analyze(image_np, actions=['emotion'], enforce_detection=False)
-            
-            # Exibir o resultado para depuração
-            
-            # Se o resultado for uma lista de dicionários
+            emotion_results = DeepFace.analyze(image_np, actions=['emotion'], enforce_detection=False)
+            print("Emoções detectadas (todas):", emotion_results)
             if isinstance(results, list) and len(results) > 0:
                 result = results[0]  # Pegando o primeiro item da lista
                 if 'dominant_emotion' in result:

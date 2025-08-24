@@ -11,7 +11,7 @@ import { LineGraph } from "@/components/lineGraph/lineGraph";
 
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useSearchParams } from "expo-router/build/hooks";
+import { useLocalSearchParams } from 'expo-router';
 import { getUserEmail } from "@/utils/infos";
 import { configs } from "@/utils/configs";
 import { BarGraph } from "@/components/barGraph";
@@ -38,18 +38,19 @@ interface EmotionKeys {
    type Emotion = "HAPPY" | "SAD" | "ANGRY" | "NEUTRAL" | "SURPRISE" | "FEAR" | "DISGUST";
 
   
-   const emotionTranslations: EmotionKeys = {
-    'happy': 'Alegria',
-    'sad': 'Tristeza',
-    'angry': 'Raiva',
-    'surprise': 'Surpresa',
-    'neutral': 'Calmo',
-    'fear': 'Medo'
-   };
+const emotionTranslations: Record<string, string> = {
+    HAPPY: "Alegria",
+    SAD: "Tristeza",
+    ANGRY: "Raiva",
+    NEUTRAL: "Neutro",
+    SURPRISE: "Surpresa",
+    FEAR: "Medo",
+    DISGUST: "Nojo",
+};
 export default function Analyze(){
   const [inducingData, setInducingData] = useState<InducingResponse | null>(null);
-    const searchParams = useSearchParams()
-    const  email = String(searchParams.get('email')) || "";
+  const searchParams = useLocalSearchParams();
+  const email = String(searchParams.email || "")
 
     const emotionImages = {
         HAPPY: require('@/assets/images/emotions/alegria.png'),
@@ -84,7 +85,7 @@ export default function Analyze(){
                   if (response.ok) {
                       const data = await response.json();
                       setInducingData(data);
-                      
+                      console.log(data)
                   } else {
                       console.error('Erro ao buscar dados da indução:', response.status);
                   }
@@ -137,7 +138,7 @@ export default function Analyze(){
                     <Text style={styles_analyzes_happy.text_about}>  {emotionTranslations[inducingData.emocaoDominate as keyof EmotionKeys] || inducingData.emocaoDominate}</Text>
                 </View>
             </View>
-            <PieGraph title={"Porcentagem de humores registrado durante a indução" } allDetectedEmotions={inducingData.allDetectedEmotions}/>
+            <PieGraph title={"Porcentagem de humores registrado durante a indução" } allDetectedEmotions={[inducingData.allDetectedEmotions]}/>
             <LineGraph allDetectedEmotions={inducingData.allDetectedEmotions}/>
          <View style={styles_analyzes_happy.contaner_videos}>
             <Text style={styles_analyzes_happy.txt_cnt_videos}> Videos que obtiveram maior indução :</Text>

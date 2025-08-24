@@ -9,15 +9,16 @@ interface Props {
   allDetectedEmotions: string[];
 }
 
+
 export function LineGraph({allDetectedEmotions}:Props) {
   const emotionValence: Record<string, number> = {
-    happy: 1,
-    surprise: 0.5,
-    neutral: 0,
-    sad: -0.5,
-    angry: -0.7,
-    fear: -0.8,
-    disgust: -0.9,
+    happy: 0.3,
+    surprise: 0.2,
+    neutral: 0.1,
+    sad: -0.2,
+    angry: -0.3,
+    fear: -0.5,
+    disgust: -0.4,
   };
 
   const lineData = allDetectedEmotions.map((emotion, index) => ({
@@ -32,8 +33,11 @@ export function LineGraph({allDetectedEmotions}:Props) {
       <Text style={s.title}>Variação Emocional ao Longo do Tempo</Text>
       <LineChart
         data={lineData}
-        color={colors.DARK_BLUE} 
+        color={colors.DARK_BLUE}
         thickness={3}
+        yAxisOffset={-0.6}
+        noOfSections={5}
+        yAxisInterval={0.2}
         hideRules
         dataPointsColor={colors.red}
         xAxisLabelTextStyle={{

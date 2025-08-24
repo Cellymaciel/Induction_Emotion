@@ -7,7 +7,7 @@ import { InputDate } from "@/components/inputDate";
 import { BarGraph } from "@/components/barGraph";
 import { PieGraph } from "@/components/pieGraph";
 import { EmotionComparisonGraph } from "@/components/barGraph/emotionComparisonGraph";
-import { useSearchParams } from "expo-router/build/hooks";
+import { useLocalSearchParams } from "expo-router/build/hooks";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getUserEmail } from "@/utils/infos";
 import { configs } from "@/utils/configs";
@@ -35,17 +35,17 @@ interface InducingResponse {
 export default function Report(){
 
 
-  const searchParams = useSearchParams()
-  const  email = String(searchParams.get('email')) || "";
+  const searchParams = useLocalSearchParams()
+  const email = String(searchParams.email || "")
   const [inducingData, setInducingData] = useState<InducingResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [filteredInducingData, setFilteredInducingData] = useState<InducingResponse[]>([]);
   const [filterStartDate, setFilterStartDate] = useState<Date | null>(null);
   const [filterEndDate, setFilterEndDate] = useState<Date | null>(null);
   const [filterEmotion, setFilterEmotion] = useState<string | null>(null);
-  const barGraphRef = useRef<ViewShot>(null); 
-    const pieGraphRef = useRef<ViewShot>(null);   
-    const comparisonGraphRef = useRef<ViewShot>(null);
+  const barGraphRef = useRef<ViewShot>(null as unknown as ViewShot); 
+  const pieGraphRef = useRef<ViewShot>(null as unknown as ViewShot);   
+  const comparisonGraphRef = useRef<ViewShot>(null as unknown as ViewShot);
 
 
   useEffect(() => {
@@ -100,7 +100,7 @@ const applyFilters = () => {
     );
   }
 
-  if (filterEmotion && filterEmotion !== 'Todas') { // Assumindo que 'Todas' seja uma opção no seu InputEmotion
+  if (filterEmotion && filterEmotion !== 'Todas') {
     filteredData = filteredData.filter(
       (item) => item.emocaoEscolha.toLowerCase() === filterEmotion.toLowerCase()
     );

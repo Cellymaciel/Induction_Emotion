@@ -3,7 +3,6 @@ import { font } from "@/constants/font";
 import { View, Text , Image, TextInput, TouchableOpacity} from "react-native";
 import { style_login } from "@/styles/css_login";
 import { router, useNavigation } from "expo-router";
-import { useSearchParams } from "expo-router/build/hooks";
 import { useState } from "react";
 import { configs } from "@/utils/configs";
 
@@ -35,7 +34,7 @@ export default function Cadastro(){
         }).then(response => {
             if(response.status == 200){
                 alert('Usuario criado com sucesso')
-                navigation.navigate('index')
+                router.push
             }else if( response.status == 409){
                 throw new Error("Usario ja cadastrado");
             }

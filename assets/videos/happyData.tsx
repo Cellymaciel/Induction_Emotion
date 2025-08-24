@@ -3,9 +3,9 @@ const videoHappy =[
         id:1, uri: require('../videos/84.mp4'), "expectedEmotion":"happy"
     },
  
-    // {
-    //     id:2, uri: require('../videos/85.mp4'), "expectedEmotion":"happy"
-    // },
+    {
+        id:2, uri: require('../videos/85.mp4'), "expectedEmotion":"happy"
+    },
     // {
     //     id:3, uri: require('../videos/86.mp4'), "expectedEmotion":"happy"
     // },

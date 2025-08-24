@@ -2,7 +2,7 @@ import { View, Text, Image, TextInput, TouchableOpacity } from "react-native";
 import { style_login } from "@/styles/css_login";
 import { font } from "@/constants/font";
 import { colors } from "@/constants/Colors";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { useState } from "react";
 import { configs } from "@/utils/configs";
 import * as SecureStore from 'expo-secure-store';
@@ -43,9 +43,9 @@ export default function Login(){
     
                 if(response.status == 200){
                     const data = await response.json();
-                    await  SaveInfosUser(String(data.name), String(data.email), String(data.phone)); // <--- CONVERSÃO PARA STRING AQUI
+                    await  SaveInfosUser(String(data.name), String(data.email), String(data.phone)); 
                     console.log('usuario Logado')
-                    navigation.navigate('tabFootBar')
+                    router.navigate('/(app)/home')
                     return response.json()
                 }else if ( response.status == 401){
                     alert('Email ou senha Incorreto')
@@ -80,7 +80,7 @@ export default function Login(){
             <View>
                 <View style={{justifyContent:'center', flexDirection:'row', marginTop:45, gap:7}}>
                     <Text style={{fontFamily:font.regular, fontSize:15, color:colors.Black}}>Não tem conta?</Text>
-                    <TouchableOpacity onPress={()=>  navigation.navigate('cadastro')}>
+                    <TouchableOpacity onPress={()=>  router.navigate('/(auth)/cadastro')}>
                         <Text style={{fontFamily:font.medium, fontSize:16, color:colors.Black}}>Cadastre-se</Text>
                     </TouchableOpacity>
                 </View>

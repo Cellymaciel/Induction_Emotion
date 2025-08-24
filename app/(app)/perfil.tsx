@@ -8,7 +8,7 @@ import CustomModal from "@/components/modal"
 import { useEffect, useState } from "react"
 import { useRoute } from "@react-navigation/native"
 import { configs } from "@/utils/configs"
-import { useSearchParams } from "expo-router/build/hooks"
+import { useLocalSearchParams } from "expo-router/build/hooks"
 import { getUserEmail } from "@/utils/infos"
 
 export default function Perfil(){
@@ -21,8 +21,8 @@ export default function Perfil(){
 
    
 
-    const searchParams = useSearchParams()
-    const  email = String(searchParams.get('email')) || "";
+    const searchParams = useLocalSearchParams()
+    const email = String(searchParams.email || "")
 
     useEffect(() => {
         const fetchUserProfile = async () => {
