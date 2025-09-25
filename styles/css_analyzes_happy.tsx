@@ -1,8 +1,7 @@
 import { colors } from "@/constants/Colors";
 import { font } from "@/constants/font";
-import { ResizeMode } from "expo-av";
 import { StyleSheet } from "react-native";
-
+import { VideoContentFit } from "expo-video";
 const styles_analyzes_happy = StyleSheet.create({
     container:{
         padding:15
@@ -33,7 +32,6 @@ const styles_analyzes_happy = StyleSheet.create({
     },
     img_card:{
         borderRadius:5,
-        resizeMode: ResizeMode.COVER,
         width:50,
         height:50,
         marginTop:15

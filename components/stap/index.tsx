@@ -18,23 +18,16 @@ type Props ={
     description: string
     screenName?: string
     imagem: ImageKey | string
-    emotionInduction: string
     onPress?: ()=> void;
 }
 
-export function Stap ({title, description, imagem, screenName, emotionInduction, onPress}: Props){
+export function Stap ({title, description, imagem, screenName, onPress}: Props){
     const imageSource = imageMap[imagem as ImageKey] || { uri: imagem }
 
-     const handlePress = () => {
-    if (onPress) {
-      onPress(); 
-    } else if (screenName) {
-      router.navigate({ pathname: screenName, params: { emotionInduction: emotionInduction } });
-    }
-  };
+ 
 
     return(
-        <TouchableOpacity onPress={handlePress}>          
+        <TouchableOpacity onPress={onPress}>          
             <View style={style_stap.container} >
             <Image source={imageSource} style={style_stap.img} />           
                  <View style={style_stap.box_text}>

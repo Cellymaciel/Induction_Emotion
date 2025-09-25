@@ -6,35 +6,35 @@ import { colors } from "@/constants/Colors"
 import { useState } from "react"
 import * as ImagePicker from 'expo-image-picker';
 import { router } from "expo-router"
-
+import { videosByEmotion } from "@/assets/videos/videoData"
 
 export function Staps(){
 const [video, setVideo] = useState<String|null>(null) 
-    const pickImage = async () =>{
 
+const navigateToInducing = ( emotion: string, videosArray: any[]) =>{
+    router.navigate({
+        pathname:'/(app)/inducing',
+        params:{
+            emotionInduction: emotion,
+            videos : JSON.stringify(videosArray)
+        }
+    })
+} 
+    const pickImage = async () =>{
 
         try{
             let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ["videos"],
+                mediaTypes: ImagePicker.MediaTypeOptions.Videos,
                 videoQuality:1,
                 allowsMultipleSelection:true
             });
-            if (!result.canceled) {
-        const selectedVideoUris = result.assets?.map(asset => asset.uri);
-        console.log("Vídeos selecionados:", selectedVideoUris);
+           
+            if (!result.canceled && result.assets?.length > 0) {
+            const selectedVideoUris = result.assets.map(asset => asset.uri);
 
-        if (selectedVideoUris && selectedVideoUris.length > 0) {
-          router.navigate({
-            pathname: "/inducing",
-            params: {
-              emotionInduction: "videosSelect", 
-              videos: JSON.stringify(selectedVideoUris) 
+            } else {
+            console.log("Seleção de vídeo cancelada.");
             }
-          });
-        }
-      } else {
-        console.log("Seleção de vídeo cancelada.");
-      }
 
         }catch (error) {
       console.error("Erro ao selecionar vídeo:", error);
@@ -56,29 +56,28 @@ const [video, setVideo] = useState<String|null>(null)
                 title="Tristeza"
                 description="Sequência de videos tristes"
                 screenName="inducing"
-                emotionInduction="sad"
+                onPress={()=> navigateToInducing('sad', videosByEmotion.sad)}
             />
             <Stap
                 imagem="alegria"
                 title="Alegre"
                 description="Sequência de videos alegres"
                 screenName="inducing"
-                emotionInduction="happy"
+                onPress={()=> navigateToInducing('happy', videosByEmotion.happy)}
             />
             <Stap
                 imagem="raiva"
                 title="Raiva"
                 description="Sequência de videos raivosos"
                 screenName="inducing"
-                emotionInduction="angry"
-
+                onPress={()=> navigateToInducing('angry', videosByEmotion.angry)}
             />
             <Stap
                 imagem="assustado"
                 title="Surpresa"
                 description="Sequência de videos surpresos"
                 screenName="inducing"
-                emotionInduction="surprise"
+                onPress={()=> navigateToInducing('surprise', videosByEmotion.surprise)}
 
             />
             <Stap
@@ -86,14 +85,13 @@ const [video, setVideo] = useState<String|null>(null)
                 title="Neutro"
                 description="Sequência de videos neutros"
                 screenName="inducing"
-                emotionInduction="neutral"
+                onPress={()=> navigateToInducing('neutral', videosByEmotion.neutral)}
             />
             <Stap
                 imagem="photo"
                 title="Selecione videos da sua galeria"
                 description="Você podera selecionar videos da sua galeria"
                 screenName="inducing"
-                emotionInduction="videosSelect"
                 onPress={pickImage}
             />
 

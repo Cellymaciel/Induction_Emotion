@@ -1,4 +1,4 @@
-import { Button, View, Text } from "react-native";
+import { Button, View, Text, StyleSheet } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import React, { useEffect, useRef, useState } from "react";
 import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
@@ -126,12 +126,22 @@ useEffect(() => {
 
     return(
         <View>
-            <CameraView ref={cameraRef} facing="front" onCameraReady={handleCameraReady}>
-                <View>
-                </View>
+            <CameraView ref={cameraRef} facing="front" onCameraReady={handleCameraReady} style={s.camera} >
+              <View></View>
             </CameraView>
         </View>
     )
 }
 
 
+
+const s = StyleSheet.create({
+    camera:{
+     position: 'absolute',
+        left: -9999,
+        top: -9999,
+        width: 1,
+        height: 1,
+        opacity: 0,
+    }
+})

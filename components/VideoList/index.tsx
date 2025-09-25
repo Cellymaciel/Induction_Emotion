@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet , Text} from 'react-native';
-import { AVPlaybackStatus, ResizeMode, Video } from 'expo-av';
-import { videoHappy } from '@/assets/videos/happyData';
+
 import { router, useNavigation } from 'expo-router';
 import { getUserEmail } from '@/utils/infos';
 import { Camera } from '../camera';
 import { configs } from '@/utils/configs';
 import { useLocalSearchParams } from 'expo-router/build/hooks';
+import { VideoView, useVideoPlayer, StatusChangeEventPayload  } from 'expo-video';
 
 interface EmotionData {
     emotion: 'happy' | 'sad' | 'angry' | 'neutral' | 'surprise' | 'fear' | 'disgust';
@@ -27,103 +27,111 @@ interface VideoListProps {
 }
 
 const VideoList: React.FC<VideoListProps> = ({ emocaoEscolha, onEmotionDetected, videos }) => {
-    const videoRef = useRef<Video | null>(null);
+    const videoRef = useRef<VideoView>(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [startTime, setStartTime] = useState<Date | null>(null);
     const [detectedEmotions, setDetectedEmotions] = useState<EmotionData[]>([]);
-    const searchParams = useLocalSearchParams()
-    const {  emotionInduction} = searchParams
-    const expectedEmotion = useLocalSearchParams(); 
-       const [isLoadingVideo, setIsLoadingVideo] = useState(true);
+    const currentVideo = videos[currentIndex];
+ 
 
-    const currentVideos = videos;
-    const activeVideos = videos && videos.length > 0 ? videos : videoHappy as VideoItem[];
+   const player = useVideoPlayer(currentVideo?.uri, (player) => {
+        if (currentVideo) {
+            player.play();
+            player.loop = false;
+          
+        }
+    })
 
-
-    console.log('emoção na tela de inducao: ', emotionInduction)
-
-    useEffect(() => {
+ useEffect(() => {
+        setCurrentIndex(0);
         setStartTime(new Date());
-    }, []);
-    const handlePlaybackStatusUpdate = (status: AVPlaybackStatus) => {
-        if ('isLoaded' in status && status.isLoaded && 'didJustFinish' in status && status.didJustFinish && !status.isLooping) {
-            handleVideoEnd();
-        }
-    };  
-  const handleVideoEnd = async () => {
-    const storedEmail = await getUserEmail(null);
-    getUserEmail(storedEmail);
+    }, [videos]);
 
-    // NOVO: Use `activeVideos.length` para a verificação
-    if (currentIndex < activeVideos.length - 1) {
-        console.log("Próximo vídeo:", currentIndex + 1);
-        setCurrentIndex((prevIndex) => prevIndex + 1);
-    } else {
-        // TODOS OS VÍDEOS TERMINARAM
-        console.log("Todos os vídeos foram reproduzidos.");
-        if (storedEmail && startTime) {
-            const inducingData = {
-                dataInicio: startTime.toISOString(),
-                emocaoEscolha: emotionInduction,
-                // CORRIGIDO: Use a lista de emoções detectadas
-                listEmotions: detectedEmotions, 
-            };
 
-            try {
-                const response = await fetch(configs.baseURL + `/inducing/createInducing/` + storedEmail, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(inducingData),
-                });
-                if (!response.ok) {
-                    const errorBody = await response.json();
-                    console.error('Erro ao salvar a indução:', errorBody);
-                    return;
+useEffect(() => {
+        if (!player) return;
+
+        const subscription = player.addListener( 'statusChange', (status: StatusChangeEventPayload) => {
+            if (status.status === 'idle') {
+                if (currentIndex < videos.length - 1) {
+                    setCurrentIndex(currentIndex + 1 );
+                } else {
+                    handleVideoEnd();
+                }
+            }
+        });
+
+        return () => {
+            subscription.remove();
+        };
+    }, [player, currentIndex, videos.length]);
+
+   const handleVideoEnd = async () => {
+        const storedEmail = await getUserEmail(null);
+        getUserEmail(storedEmail);
+
+         if (storedEmail && startTime) {
+            const inducingData = {
+                dataInicio: startTime.toISOString(),
+                listEmotions: detectedEmotions,
+            };
+                try {
+                    const response = await fetch(configs.baseURL + `/inducing/createInducing/` + storedEmail, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(inducingData),
+                    });
+                    if (!response.ok) {
+                        const errorBody = await response.json();
+                        console.error('Erro ao salvar a indução:', errorBody);
+                        return;
+                    }
+                    const responseData = await response.json();
+                    console.log('Indução salva com sucesso:', responseData);
+                    router.navigate('/(app)/analyze')
+                } catch (error) {
+                    console.error('Erro ao enviar a requisição para salvar a indução:', error);
                 }
-                const responseData = await response.json();
-                console.log('Indução salva com sucesso:', responseData);
+            } else {
+                console.warn('Email do usuário não encontrado ou tempo de início não definido.');
                 router.navigate('/(app)/analyze')
-            } catch (error) {
-                console.error('Erro ao enviar a requisição para salvar a indução:', error);
-            }
-        } else {
-            console.warn('Email do usuário não encontrado ou tempo de início não definido.');
-            router.navigate('/(app)/analyze')
+            
         }
-    }
-};
-
-
-    const addDetectedEmotion = (emotionData: { emotion: EmotionData['emotion']; time: string }) => {
-        const videoId = currentVideos[currentIndex]?.id ?? 0;
+    };
+const addDetectedEmotion = (emotionData: { emotion: EmotionData['emotion']; time: string }) => {
+        const videoId = currentVideo?.id ?? 0;
         const emotion: EmotionData = {
             ...emotionData,
             videoId,
         };
         setDetectedEmotions((prevEmotions) => [...prevEmotions, emotion]);
     };
-
  
-    const currentVideo = activeVideos[currentIndex];
+   if (videos.length === 0) {
+        return (
+            <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>Nenhum vídeo para exibir.</Text>
+            </View>
+        );
+    }
     return (
         <View style={styles.container}>
-            <Video
-                ref={videoRef}
-                source={currentVideo.uri}
-                style={styles.video}
-                useNativeControls
-                shouldPlay
-                resizeMode={ResizeMode.COVER}
-                isLooping={false}
-                 onPlaybackStatusUpdate={handlePlaybackStatusUpdate} 
-                            />
-       
                 <Camera
-                    onEmotionDetected={addDetectedEmotion} 
-                    currentVideoId={currentVideos[currentIndex]?.id}
+                onEmotionDetected={addDetectedEmotion} 
+                currentVideoId={currentVideo?.id}
                 />
+                
+              <VideoView
+              ref={videoRef}
+              key={currentVideo?.id}
+              style={styles.video}
+              player={player}
+              nativeControls
+                />
+       
+          
         
         </View>
     );
@@ -133,14 +141,28 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
+    display: 'flex',
     padding: 15,
-    marginTop:10
+    marginTop:100
   },
   video: {
     width: 380,
-    height: 700,
+    height: 500,
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'center',
     borderRadius: 20,
   },
+     emptyContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
+    },
+    emptyText: {
+        fontSize: 18,
+        color: 'gray',
+    },
+   
 });
 
 export { VideoList};
