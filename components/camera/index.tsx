@@ -11,8 +11,8 @@ type Emotion = 'happy' | 'sad' | 'angry' | 'neutral' | 'surprise' | 'fear' | 'di
 
 
 interface CameraProps {
-    onEmotionDetected: (emotionData: { emotion: Emotion; time: string; videoId: number }) => void;
-    currentVideoId: number;
+    onEmotionDetected: (emotionData: { emotion: Emotion; time: string; videoId: number|string }) => void;
+    currentVideoId: number|string;
 }
 export function Camera({ onEmotionDetected, currentVideoId }: CameraProps){
    const [permissions, setPermissions] = useCameraPermissions()
@@ -142,6 +142,7 @@ const s = StyleSheet.create({
         top: -9999,
         width: 1,
         height: 1,
+         zIndex: 1,
         opacity: 0,
     }
 })

@@ -5,17 +5,16 @@ import { router, useNavigation } from 'expo-router';
 import { getUserEmail } from '@/utils/infos';
 import { Camera } from '../camera';
 import { configs } from '@/utils/configs';
-import { useLocalSearchParams } from 'expo-router/build/hooks';
 import { VideoView, useVideoPlayer, StatusChangeEventPayload  } from 'expo-video';
 
 interface EmotionData {
     emotion: 'happy' | 'sad' | 'angry' | 'neutral' | 'surprise' | 'fear' | 'disgust';
     time: string;
-    videoId: number;
+    videoId: number | string;
 }
 
 interface VideoItem {
-    id: number;
+    id: number | string;
     uri: any;
     expectedEmotion: string;
 }
@@ -25,6 +24,10 @@ interface VideoListProps {
     onEmotionDetected: (emotionData: EmotionData) => void;
       videos: VideoItem[];
 }
+import * as FileSystem from "expo-file-system";
+
+
+
 
 const VideoList: React.FC<VideoListProps> = ({ emocaoEscolha, onEmotionDetected, videos }) => {
     const videoRef = useRef<VideoView>(null);
@@ -34,13 +37,29 @@ const VideoList: React.FC<VideoListProps> = ({ emocaoEscolha, onEmotionDetected,
     const currentVideo = videos[currentIndex];
  
 
-   const player = useVideoPlayer(currentVideo?.uri, (player) => {
-        if (currentVideo) {
-            player.play();
-            player.loop = false;
-          
-        }
-    })
+const player = useVideoPlayer(currentVideo?.uri, (player) => {
+  if (currentVideo) {
+    player.play();
+    player.loop = false;
+  }
+});
+
+
+  useEffect(() => {
+        const loadAndPlayVideo = async () => {
+            if (currentVideo?.uri) {
+                const exists = await FileSystem.getInfoAsync(currentVideo.uri);
+                if (exists.exists) {
+                    player.replace(currentVideo.uri);
+                    player.play();
+                } else {
+                    console.warn("Arquivo de vídeo não encontrado:", currentVideo.uri);
+                }
+            }
+        };
+
+        loadAndPlayVideo();
+    }, [currentVideo, player]);
 
  useEffect(() => {
         setCurrentIndex(0);
@@ -100,11 +119,17 @@ useEffect(() => {
             
         }
     };
+
 const addDetectedEmotion = (emotionData: { emotion: EmotionData['emotion']; time: string }) => {
-        const videoId = currentVideo?.id ?? 0;
+        const videoId = currentVideo?.id;
+            if (videoId === undefined) {
+            console.warn("videoId is undefined, skipping emotion detection.");
+            return;
+    }
+
         const emotion: EmotionData = {
             ...emotionData,
-            videoId,
+            videoId : videoId,
         };
         setDetectedEmotions((prevEmotions) => [...prevEmotions, emotion]);
     };
@@ -116,22 +141,25 @@ const addDetectedEmotion = (emotionData: { emotion: EmotionData['emotion']; time
             </View>
         );
     }
+
+
+
     return (
         <View style={styles.container}>
-                <Camera
-                onEmotionDetected={addDetectedEmotion} 
+   
+            <Camera
+                onEmotionDetected={addDetectedEmotion}
                 currentVideoId={currentVideo?.id}
-                />
-                
-              <VideoView
+            />
+            {player &&(
+            <VideoView
               ref={videoRef}
-              key={currentVideo?.id}
+              key={currentVideo.id}
               style={styles.video}
               player={player}
               nativeControls
-                />
-       
-          
+            />
+            )}   
         
         </View>
     );
@@ -152,6 +180,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     borderRadius: 20,
+    zIndex:0
   },
      emptyContainer: {
         justifyContent: 'center',
@@ -162,7 +191,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: 'gray',
     },
+    can:{
+    zIndex: 0
+    }
    
 });
 
 export { VideoList};
+

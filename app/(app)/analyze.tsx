@@ -85,7 +85,7 @@ export default function Analyze(){
                   if (response.ok) {
                       const data = await response.json();
                       setInducingData(data);
-                      console.log(data)
+                      console.log( 'dados da undução',data)
                   } else {
                       console.error('Erro ao buscar dados da indução:', response.status);
                   }

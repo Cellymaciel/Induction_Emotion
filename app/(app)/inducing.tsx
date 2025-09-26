@@ -8,7 +8,7 @@ import { useLocalSearchParams } from "expo-router";
 interface EmotionData {
     emotion: 'happy' | 'sad' | 'angry' | 'neutral' | 'surprise' | 'fear' | 'disgust';
     time: string;
-    videoId: number;
+    videoId: number | string;
   
 }
 interface VideoItem {
@@ -54,15 +54,17 @@ export default function Inducing(){
                 parsedVideos = [];
             }
         }
+        setVideosToPlay(parsedVideos);
 
         if (emotionInductionParam && emotionMap[emotionInductionParam as keyof typeof emotionMap]) {
             chosenEmotion = emotionMap[emotionInductionParam as keyof typeof emotionMap];
-        } else {
+        }  else if (emotionInductionParam === 'custom') { 
+             chosenEmotion = "Videos da Galeria";
+        }else {
             chosenEmotion = "";
         }
 
         setEmocaoEscolha(chosenEmotion);
-        setVideosToPlay(parsedVideos);
     }, [emotionInductionParam, videosParam]);
 
   const handleEmotionDetected = useCallback((emotionData: EmotionData) => {

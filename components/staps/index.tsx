@@ -7,9 +7,9 @@ import { useState } from "react"
 import * as ImagePicker from 'expo-image-picker';
 import { router } from "expo-router"
 import { videosByEmotion } from "@/assets/videos/videoData"
+import * as FileSystem from "expo-file-system";
 
 export function Staps(){
-const [video, setVideo] = useState<String|null>(null) 
 
 const navigateToInducing = ( emotion: string, videosArray: any[]) =>{
     router.navigate({
@@ -20,18 +20,51 @@ const navigateToInducing = ( emotion: string, videosArray: any[]) =>{
         }
     })
 } 
+
+const normalizeUri = (uri: string) => decodeURIComponent(uri);
+
+const ensureFileExists = async (asset: any) => {
+  const decodedUri = normalizeUri(asset.uri);
+  const fileInfo = await FileSystem.getInfoAsync(decodedUri);
+
+  if (fileInfo.exists) {
+    console.log("Arquivo existe:", decodedUri);
+    return decodedUri;
+  } else {
+    console.log("Arquivo NÃO existe, copiando para documentDirectory...");
+    const newUri = FileSystem.documentDirectory + (asset.fileName ?? `video-${Date.now()}.mp4`);
+    await FileSystem.copyAsync({
+      from: asset.uri,
+      to: newUri,
+    });
+    return newUri;
+  }
+};
+
     const pickImage = async () =>{
 
         try{
             let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+                mediaTypes: ['videos'],
                 videoQuality:1,
                 allowsMultipleSelection:true
             });
            
-            if (!result.canceled && result.assets?.length > 0) {
-            const selectedVideoUris = result.assets.map(asset => asset.uri);
+            console.log(result);
+          if (!result.canceled && result.assets?.length > 0) {
+      const selectedVideos: any[] = [];
 
+      for (let index = 0; index < result.assets.length; index++) {
+        const asset = result.assets[index];
+        const safeUri = await ensureFileExists(asset);
+
+        selectedVideos.push({
+          id: index,
+          uri: { uri: safeUri },  
+          expectedEmotion: 'custom',
+        });
+      }
+                navigateToInducing('custom', selectedVideos);
             } else {
             console.log("Seleção de vídeo cancelada.");
             }
@@ -39,6 +72,7 @@ const navigateToInducing = ( emotion: string, videosArray: any[]) =>{
         }catch (error) {
       console.error("Erro ao selecionar vídeo:", error);
     }
+
 
     }
 
