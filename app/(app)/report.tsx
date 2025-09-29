@@ -102,7 +102,7 @@ const applyFilters = () => {
 
   if (filterEmotion && filterEmotion !== 'Todas') {
     filteredData = filteredData.filter(
-      (item) => item.emocaoEscolha.toLowerCase() === filterEmotion.toLowerCase()
+      (item) => item.emocaoEscolha === filterEmotion
     );
   }
 
@@ -127,7 +127,7 @@ const captureGraph = async (ref: React.RefObject<View>): Promise<string | null> 
     return null;
   }
 };
-const captureViewAsBase64 = useCallback(async (ref: React.RefObject<ViewShot>): Promise<string | null> => { // Change to ViewShot
+const captureViewAsBase64 = useCallback(async (ref: React.RefObject<ViewShot>): Promise<string | null> => { 
   if (ref.current) {
       try {
           const result = await captureRef(ref, {
@@ -189,8 +189,7 @@ const barGraphData = Object.entries(emotionCountsForBarGraph).map(([emotion, cou
 
 const totalInductions = dataToUse.length;
 const correctPredictionsCount = dataToUse.filter(
-  (inducing) => inducing.emocaoDominate?.toLowerCase() === inducing.emocaoEscolha.toLowerCase()
-).length;
+  (inducing) => inducing.emocaoDominate === inducing.emocaoEscolha).length;
 
 const allEmotionsForAllInductions = dataToUse.map((inducing) => inducing.allDetectedEmotions);
     return(

@@ -35,7 +35,7 @@ const VideoList: React.FC<VideoListProps> = ({ emocaoEscolha, onEmotionDetected,
     const [startTime, setStartTime] = useState<Date | null>(null);
     const [detectedEmotions, setDetectedEmotions] = useState<EmotionData[]>([]);
     const currentVideo = videos[currentIndex];
- 
+    const [isCameraActive, setIsCameraActive] = useState(true);
 
 const player = useVideoPlayer(currentVideo?.uri, (player) => {
   if (currentVideo) {
@@ -71,7 +71,7 @@ useEffect(() => {
         if (!player) return;
 
         const subscription = player.addListener( 'statusChange', (status: StatusChangeEventPayload) => {
-            if (status.status === 'idle') {
+            if (status.status === 'idle' ) {
                 if (currentIndex < videos.length - 1) {
                     setCurrentIndex(currentIndex + 1 );
                 } else {
@@ -83,9 +83,10 @@ useEffect(() => {
         return () => {
             subscription.remove();
         };
-    }, [player, currentIndex, videos.length]);
+    }, [player, currentIndex, videos.length, detectedEmotions]);
 
    const handleVideoEnd = async () => {
+        setIsCameraActive(false);
         const storedEmail = await getUserEmail(null);
         getUserEmail(storedEmail);
 
@@ -150,6 +151,7 @@ const addDetectedEmotion = (emotionData: { emotion: EmotionData['emotion']; time
             <Camera
                 onEmotionDetected={addDetectedEmotion}
                 currentVideoId={currentVideo?.id}
+                isCameraActive={isCameraActive}
             />
             {player &&(
             <VideoView

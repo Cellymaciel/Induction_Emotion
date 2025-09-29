@@ -11,10 +11,11 @@ type Emotion = 'happy' | 'sad' | 'angry' | 'neutral' | 'surprise' | 'fear' | 'di
 
 
 interface CameraProps {
+     isCameraActive: boolean; 
     onEmotionDetected: (emotionData: { emotion: Emotion; time: string; videoId: number|string }) => void;
     currentVideoId: number|string;
 }
-export function Camera({ onEmotionDetected, currentVideoId }: CameraProps){
+export function Camera({ onEmotionDetected, currentVideoId, isCameraActive }: CameraProps){
    const [permissions, setPermissions] = useCameraPermissions()
     const cameraRef = useRef<CameraView|null>(null)
     const [isProcessing, setProcessing] = useState<Boolean>(false)
@@ -23,7 +24,30 @@ export function Camera({ onEmotionDetected, currentVideoId }: CameraProps){
         const [responseTimes, setResponseTimes] = useState<number[]>([]);
 
 
+  useEffect(() => {
+        if (permissions && permissions.granted && isCameraActive) {
+            console.log("Câmera está ativa. Iniciando captura.");
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+            intervalRef.current = setInterval(() => {
+                captureImage();
+            }, 3000);
+        } else {
+            if (intervalRef.current) {
+                console.log("Câmera desativada. Parando captura.");
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
+        }
 
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
+        };
+    }, [permissions, isCameraActive]);
 
     const captureImage = async() => {
         console.log("Entrou na função de captura.")
@@ -91,25 +115,6 @@ export function Camera({ onEmotionDetected, currentVideoId }: CameraProps){
 }
     
 
-useEffect(() => {
-      return () => {
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-        }
-      };
-    }, []);
-
-
-    const handleCameraReady = () => {
-      console.log("Câmera está pronta. Iniciando captura.");
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-      intervalRef.current = setInterval(() => {
-        captureImage();
-      }, 3000);
-    };
-
 
   
     if(!permissions){
@@ -126,9 +131,17 @@ useEffect(() => {
 
     return(
         <View>
-            <CameraView ref={cameraRef} facing="front" onCameraReady={handleCameraReady} style={s.camera} >
-              <View></View>
-            </CameraView>
+          {isCameraActive && permissions?.granted ? (
+                <CameraView
+                    ref={cameraRef}
+                    facing="front"
+                    style={s.camera}
+                >
+                    <View></View>
+                </CameraView>
+            ) : (
+                <View style={{ flex: 1 }} />
+            )}
         </View>
     )
 }
